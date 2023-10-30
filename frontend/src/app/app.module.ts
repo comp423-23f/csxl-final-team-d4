@@ -38,7 +38,8 @@ import { AboutComponent } from './about/about.component';
 import { GateComponent } from './gate/gate.component';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
 import { EventFilterPipe } from './event/event-filter/event-filter.pipe';
-import { NgChartsModule } from 'ng2-charts';
+import { NgChartsConfiguration, NgChartsModule } from 'ng2-charts';
+import { StatisticsComponent } from './statistics/statistics.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { NgChartsModule } from 'ng2-charts';
     HomeComponent,
     AboutComponent,
     GateComponent,
-    ProfileEditorComponent
+    ProfileEditorComponent,
+    StatisticsComponent
   ],
   imports: [
     /* Angular */
@@ -91,6 +93,7 @@ import { NgChartsModule } from 'ng2-charts';
       useClass: HttpRequestInterceptor,
       multi: true
     },
+    { provide: NgChartsConfiguration },
     DatePipe,
     EventFilterPipe
   ],
