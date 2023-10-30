@@ -7,6 +7,7 @@ import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.
 import { CoworkingPageComponent } from './coworking/coworking-home/coworking-home.component';
 import { AmbassadorPageComponent } from './coworking/ambassador-home/ambassador-home.component';
 import { AboutComponent } from './about/about.component';
+import { StatisticsComponent } from './statistics/statistics.component';
 
 const routes: Routes = [
   HomeComponent.Route,
@@ -40,7 +41,8 @@ const routes: Routes = [
     title: 'Experimental',
     loadChildren: () =>
       import('./event/event.module').then((m) => m.EventModule)
-  }
+  },
+  { path: 'statistics', component: StatisticsComponent }
 ];
 
 @NgModule({

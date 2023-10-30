@@ -63,12 +63,12 @@ for feature_api in feature_apis:
     app.include_router(feature_api.api)
 
 # Static file mount used for serving Angular front-end in production, as well as static assets
-app.mount("/", static_files.StaticFileMiddleware(directory="./static"))  # type: ignore
+app.mount("/", static_files.StaticFileMiddleware(directory="./static"))
 
 
 # Add application-wide exception handling middleware for commonly encountered API Exceptions
 @app.exception_handler(UserPermissionException)
-def permission_exception_handler(request: Request, e: UserPermissionException):  # type: ignore
+def permission_exception_handler(request: Request, e: UserPermissionException):
     return JSONResponse(status_code=403, content={"message": str(e)})
 
 

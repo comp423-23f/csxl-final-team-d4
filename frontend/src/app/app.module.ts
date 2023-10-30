@@ -38,6 +38,7 @@ import { AboutComponent } from './about/about.component';
 import { GateComponent } from './gate/gate.component';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
 import { EventFilterPipe } from './event/event-filter/event-filter.pipe';
+import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -81,7 +82,8 @@ import { EventFilterPipe } from './event/event-filter/event-filter.pipe';
           return localStorage.getItem('bearerToken');
         }
       }
-    })
+    }),
+    NgChartsModule
   ],
   providers: [
     {
