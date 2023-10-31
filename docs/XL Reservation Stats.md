@@ -16,7 +16,7 @@
 
 ## 2. I anticipate needing new widgets for easy sharing capability for each saved report.
 
-## 3. I do not anticipate needing additional models for this story.
+## 3. I possibly anticipate needing new models for the public "Statistics" page version of the XL amabassador stats page.
 
 ## 4. I think there will need to be a route to connect the proposed "save" widget to a new component page named "Statistics."
 
