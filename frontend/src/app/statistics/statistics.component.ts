@@ -57,6 +57,7 @@ export class StatisticsComponent {
     }
     console.log(this.startDate);
     console.log(this.endDate);
+    this.displayChart = false;
     this.lineChartLabels = [
       '10-1',
       '10-2',
@@ -68,6 +69,8 @@ export class StatisticsComponent {
     ];
     this.lineChartData.labels = this.lineChartLabels;
     this.lineChartData.datasets[0].data = [15, 9, 10, 21, 6, 5, 20];
-    this.displayChart = true;
+    setTimeout(() => {
+      this.displayChart = true;
+    }, 0);
   }
 }

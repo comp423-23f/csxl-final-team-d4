@@ -42,7 +42,11 @@ const routes: Routes = [
     loadChildren: () =>
       import('./event/event.module').then((m) => m.EventModule)
   },
-  { path: 'statistics', component: StatisticsComponent }
+  {
+    path: 'statistics',
+    title: 'Registration Statistics',
+    component: StatisticsComponent
+  }
 ];
 
 @NgModule({
