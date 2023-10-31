@@ -10,7 +10,12 @@
 
   <mat-form-field appearance="fill">
     <mat-label>End Date</mat-label>
-    <input matInput [matDatepicker]="endPicker" [(ngModel)]="endDate" />
+    <input
+      matInput
+      [matDatepicker]="endPicker"
+      [matDatepickerFilter]="endDateFilter"
+      [(ngModel)]="endDate"
+      (dateChange)="onEndDateChange($event)" />
     <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
     <mat-datepicker #endPicker startView="month"></mat-datepicker>
   </mat-form-field>

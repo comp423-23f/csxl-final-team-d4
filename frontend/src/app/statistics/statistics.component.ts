@@ -32,9 +32,28 @@ export class StatisticsComponent {
   };
   public lineChartLegend = true;
 
-  constructor() {}
+  endDateFilter = (d: Date | null): boolean => {
+    if (this.startDate && d) {
+      return d.getTime() > this.startDate.getTime();
+    }
+    return true;
+  };
 
+  constructor() {}
+  onEndDateChange(event: MatDatepickerInputEvent<Date>): void {
+    if (event.value) {
+      event.value.setHours(23, 59, 59);
+      this.endDate = event.value;
+    }
+  }
   fetchData(): void {
+    if (this.startDate && this.endDate) {
+      if (this.startDate > this.endDate) {
+        window.alert('Enddate cannot precede startDate');
+      }
+    } else {
+      window.alert('StartDate and endDate cannot be empty');
+    }
     console.log(this.startDate);
     console.log(this.endDate);
     this.lineChartLabels = [
