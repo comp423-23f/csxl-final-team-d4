@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
-import { NgChartsModule } from 'ng2-charts';
 import { ChartConfiguration, ChartOptions, ChartType } from 'chart.js';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-statistics',
@@ -8,8 +10,9 @@ import { ChartConfiguration, ChartOptions, ChartType } from 'chart.js';
   styleUrls: ['./statistics.component.css']
 })
 export class StatisticsComponent {
-  title = 'ng2-charts-demo';
-
+  startDate!: Date | null;
+  endDate!: Date | null;
+  title = 'Registration statistics';
   public lineChartLabels: string[] = [];
   public lineChartData: ChartConfiguration<'line'>['data'] = {
     labels: [],
@@ -32,6 +35,8 @@ export class StatisticsComponent {
   constructor() {}
 
   fetchData(): void {
+    console.log(this.startDate);
+    console.log(this.endDate);
     this.lineChartLabels = [
       '10-1',
       '10-2',

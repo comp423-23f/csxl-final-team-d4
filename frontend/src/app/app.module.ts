@@ -40,6 +40,8 @@ import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.
 import { EventFilterPipe } from './event/event-filter/event-filter.pipe';
 import { NgChartsConfiguration, NgChartsModule } from 'ng2-charts';
 import { StatisticsComponent } from './statistics/statistics.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -78,14 +80,16 @@ import { StatisticsComponent } from './statistics/statistics.component';
     MatToolbarModule,
     FormsModule,
     RouterModule,
+    NgChartsModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => {
           return localStorage.getItem('bearerToken');
         }
       }
-    }),
-    NgChartsModule
+    })
   ],
   providers: [
     {
