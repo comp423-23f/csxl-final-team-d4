@@ -4,20 +4,20 @@
 
 ## 1 Overview: As an ambassador I will be able to see the xl lab's reservation statistics in order to better understand the lab's demand usage. An ambassador will also be able to have access to visualizations of the statistics data and access to reports of common queries for convenience. As a student I will be able to see my personal statistics in order to efficiently utilize my time in the lab.
 
-## 2 Key Personas: Describe the key personas your feature serves. What are their needs and goals with your feature?
+## 2 Key Personas: As Amy Ambassador or Rhonda Root I want to be to make reports of common queries and associated visualizations publicly available for students and other ambassadors alike. The need for this is easy public access to xl lab usage statistics and the goal is being able to share these statistics with others to better understand how to improve xl lab use.
 
-## 3 User Stories organized by persona, necessity for a minimum-viable feature, and frequency/importance of use.
+## 3 For this story, the amabassador should have a button for sharing a recent report (common query) and associated visualization for easy public access at a later point. There should also be an associated "Statistics" page where a user can see all saved public queries. The frequency/importance of this feature will be somewhat high considering this is a public feature that will likely be accessed by multiple ambassadors and students at a time.
 
-## 4 Wireframes / Mockups: Include rough wireframes of your feature’s user interfaces for the most critical user stories, along with brief descriptions of what is going on. These can be hand-drawn, made in PowerPoint/KeyNote, or created with a tool like Figma. To see an example of a detailed wireframe Kris made this summer before building the drop-in feature, see this Figma board. You will notice the final implementation is not 1:1 with the original wireframe!
+## 4 Wireframes / Mockups: Drawing located in docs/images
 
 ## 5 Technical Implementation Opportunities and Planning
 
-## What specific areas of the existing code base will you directly depend upon, extend, or integrate with?
+## 1. I will extend upon the functionality of saving reports and add the capability of sharing each saved query to a public statistics page.
 
-## 1. What planned page components and widgets, per the assigned reading, do you anticipate needing in your feature’s frontend?
+## 2. I anticipate needing new widgets for easy sharing capability for each saved report.
 
-## 2. What additional models, or changes to existing models, do you foresee needing (if any)?
+## 3. I do not anticipate needing additional models for this story.
 
-## 3. Considering your most-frequently used and critical user stories, what API / Routes do you foresee modifying or needing to add?
+## 4. I think there will need to be a route to connect the proposed "save" widget to a new component page named "Statistics."
 
-## 4. What concerns exist for security and privacy of data? Should the capabilities you are implementing be specific to only certaain users or roles? (For example: When Sally Student makes a reservation, only Sally Student or Amy Ambassador should be able to cancel the reservation. Another student, such as Sam Student, should not be able to cancel Sally’s reservation.)
+## 5. The only security/privacy concern for this data is ensuring both students and ambassadors have equal access to the "Statistics" page.
