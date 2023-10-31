@@ -6,11 +6,9 @@
 
 ## 2 Key Personas: This feature mainly serves the Amy XL Ambassador or the Rhonda Root. It can present them the graph of statistics regarding to recent usage. Therefore they are able to manipulate the data and have a great view of how the data are distributed and come up with a better plan with letting people use XL.
 
-## 3 For this story, the amabassador should be able to have an extra button on the side bar and clicking it direct them to a search page where people can select parameters and after click the search, a graph should be displayed. Amabassadors should be able to view it at any time and for each search, it should retrive the latest data fromo the database and display. How to implement the graph display is not yet clear. Also, for future work on savinig searches, more adaptions on this part should be made.
+## 3 For this story, the amabassador should be able to have an extra button on the side bar and clicking it direct them to a search page where people can select parameters and after click the search, a graph should be displayed. Amabassadors should be able to view it at any time and for each search, it should retrieve the latest data from the database and display. How to implement the graph display is not yet clear. Also, for future work on saving searches, more adaptions on this part should be made.
 
 ## 4 Wireframes / Mockups: see /image
-
-                           There should be an extra button on the XL Ambassordor section that leads us to the information page where we would utilize widgets to create a search and listing. Also, javascript features would be used to show the graph.
 
 ## 5 For isolation, I am assuming my input is a table of data, with ids as row and for each column an seperate feature is located (checkin_time, check_out_time, etc), my initial thought on this would be to first set up different methods in backend for searches with different input values,
 
