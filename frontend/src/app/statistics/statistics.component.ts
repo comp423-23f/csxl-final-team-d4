@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./statistics.component.css']
 })
 export class StatisticsComponent {
+  public displayChart = false;
   startDate!: Date | null;
   endDate!: Date | null;
   title = 'Registration statistics';
@@ -67,5 +68,6 @@ export class StatisticsComponent {
     ];
     this.lineChartData.labels = this.lineChartLabels;
     this.lineChartData.datasets[0].data = [15, 9, 10, 21, 6, 5, 20];
+    this.displayChart = true;
   }
 }

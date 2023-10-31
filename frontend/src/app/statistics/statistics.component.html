@@ -23,7 +23,7 @@
   <button mat-raised-button color="accent" (click)="fetchData()">Search</button>
 </div>
 
-<div style="display: block">
+<div *ngIf="displayChart" style="display: block">
   <canvas
     baseChart
     width="600"
