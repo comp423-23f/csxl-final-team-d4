@@ -32,7 +32,7 @@ and for frontend, having a calendar that allows clicking that sends quries to ba
 
 ## 2 Key Personas:
 
-The feature serves the Amy XL Ambassador or the Rhonda Root. The Amy XL Ambassador or the Rhonda Root need to be able to save the parameters of common queries called “Reports” that can be opened without having to specify the parameters again.
+The feature serves the Amy XL Ambassador or the Rhonda Root. The Amy XL Ambassador or the Rhonda Root needs to be able to save the parameters of common queries called “Reports” that can be opened without having to specify the parameters again.
 
 ## 3
 
