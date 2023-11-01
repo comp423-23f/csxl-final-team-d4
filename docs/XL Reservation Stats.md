@@ -12,7 +12,7 @@
 
 ## 5 Technical Implementation Opportunities and Planning
 
-## What specific areas of the existing code base will you directly depend upon, extend, or integrate with?
+    ## What specific areas of the existing code base will you directly depend upon, extend, or integrate with?
 
 ## 1. What planned page components and widgets, per the assigned reading, do you anticipate needing in your feature’s frontend?
 

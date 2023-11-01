@@ -13,20 +13,14 @@ export class StatisticsComponent {
   public displayChart = false;
   startDate!: Date | null;
   endDate!: Date | null;
+  compareStartDate!: Date | null;
+  compareEndDate!: Date | null;
+
   title = 'Registration statistics';
   public lineChartLabels: string[] = [];
   public lineChartData: ChartConfiguration<'line'>['data'] = {
     labels: [],
-    datasets: [
-      {
-        data: [],
-        label: 'Registration',
-        fill: false,
-        tension: 0.5,
-        borderColor: 'black',
-        backgroundColor: 'rgba(255,0,0,0.3)'
-      }
-    ]
+    datasets: []
   };
   public lineChartOptions: ChartOptions<'line'> = {
     responsive: false
@@ -35,18 +29,34 @@ export class StatisticsComponent {
 
   endDateFilter = (d: Date | null): boolean => {
     if (this.startDate && d) {
-      return d.getTime() > this.startDate.getTime();
+      return d.getTime() >= this.startDate.getTime();
+    }
+    return true;
+  };
+  endcompareDateFilter = (d: Date | null): boolean => {
+    if (this.compareStartDate && d) {
+      return d.getTime() >= this.compareStartDate.getTime();
     }
     return true;
   };
 
   constructor() {}
-  onEndDateChange(event: MatDatepickerInputEvent<Date>): void {
-    if (event.value) {
-      event.value.setHours(23, 59, 59);
-      this.endDate = event.value;
+  onEndDateChange(event: MatDatepickerInputEvent<Date>, signal: boolean): void {
+    if (signal) {
+      if (event.value) {
+        event.value.setHours(23, 59, 59);
+        this.endDate = event.value;
+      }
+    } else {
+      if (event.value) {
+        event.value.setHours(23, 59, 59);
+        this.compareEndDate = event.value;
+      }
     }
   }
+  getDayDifference = (start: Date, end: Date) => {
+    return Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+  };
   fetchData(): void {
     if (this.startDate && this.endDate) {
       if (this.startDate > this.endDate) {
@@ -55,20 +65,52 @@ export class StatisticsComponent {
     } else {
       window.alert('StartDate and endDate cannot be empty');
     }
-    console.log(this.startDate);
-    console.log(this.endDate);
+    if (
+      this.compareEndDate &&
+      this.compareStartDate &&
+      this.compareStartDate > this.compareEndDate
+    ) {
+      window.alert(
+        'Even if the compare is optional, it does not mean you can put end date ahead of startdate :)'
+      );
+    }
     this.displayChart = false;
-    this.lineChartLabels = [
-      '10-1',
-      '10-2',
-      '10-3',
-      '10-4',
-      '10-5',
-      '10-6',
-      '10-7'
+    let mainDataRangeLength = this.getDayDifference(
+      this.startDate!,
+      this.endDate!
+    );
+    let compareDataRangeLength =
+      this.compareStartDate && this.compareEndDate
+        ? this.getDayDifference(this.compareStartDate!, this.compareEndDate!)
+        : 0;
+    let maxLength = Math.max(mainDataRangeLength, compareDataRangeLength);
+    console.log('Max:', maxLength);
+    const labels: string[] = [];
+    for (let i = 1; i <= maxLength; i++) {
+      labels.push(`Day ${i}`);
+    }
+    this.lineChartData.labels = labels;
+    this.lineChartData.datasets = [
+      {
+        data: [15, 9, 10, 21, 6, 5, 20],
+        label: 'Registration',
+        fill: false,
+        tension: 0.5,
+        borderColor: 'pink',
+        backgroundColor: 'rgba(255,0,0,0.3)'
+      }
     ];
-    this.lineChartData.labels = this.lineChartLabels;
-    this.lineChartData.datasets[0].data = [15, 9, 10, 21, 6, 5, 20];
+
+    if (this.compareStartDate && this.compareEndDate) {
+      this.lineChartData.datasets.push({
+        data: [10, 15, 8, 18, 9, 10, 25],
+        label: 'Comparison',
+        fill: false,
+        tension: 0.5,
+        borderColor: 'blue',
+        backgroundColor: 'rgba(0,0,255,0.3)'
+      });
+    }
     setTimeout(() => {
       this.displayChart = true;
     }, 0);

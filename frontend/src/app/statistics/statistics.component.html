@@ -15,9 +15,36 @@
       [matDatepicker]="endPicker"
       [matDatepickerFilter]="endDateFilter"
       [(ngModel)]="endDate"
-      (dateChange)="onEndDateChange($event)" />
+      (dateChange)="onEndDateChange($event, true)" />
     <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
     <mat-datepicker #endPicker startView="month"></mat-datepicker>
+  </mat-form-field>
+</div>
+<div>
+  <mat-form-field appearance="fill">
+    <mat-label>（Optional）Start Date2</mat-label>
+    <input
+      matInput
+      [matDatepicker]="compareStartPicker"
+      [(ngModel)]="compareStartDate" />
+    <mat-datepicker-toggle
+      matSuffix
+      [for]="compareStartPicker"></mat-datepicker-toggle>
+    <mat-datepicker #compareStartPicker startView="month"></mat-datepicker>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>（Optional）End Date2</mat-label>
+    <input
+      matInput
+      [matDatepicker]="compareEndPicker"
+      [matDatepickerFilter]="endcompareDateFilter"
+      [(ngModel)]="compareEndDate"
+      (dateChange)="onEndDateChange($event, false)" />
+    <mat-datepicker-toggle
+      matSuffix
+      [for]="compareEndPicker"></mat-datepicker-toggle>
+    <mat-datepicker #compareEndPicker startView="month"></mat-datepicker>
   </mat-form-field>
 
   <button mat-raised-button color="accent" (click)="fetchData()">Search</button>
