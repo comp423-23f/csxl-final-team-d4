@@ -84,6 +84,10 @@ export class StatisticsComponent {
         ? this.getDayDifference(this.compareStartDate!, this.compareEndDate!)
         : 0;
     let maxLength = Math.max(mainDataRangeLength, compareDataRangeLength);
+    console.log(this.startDate);
+    console.log(this.endDate);
+    console.log('MainRange: ', mainDataRangeLength);
+    console.log('CompareRange: ', compareDataRangeLength);
     console.log('Max:', maxLength);
     const labels: string[] = [];
     for (let i = 1; i <= maxLength; i++) {
