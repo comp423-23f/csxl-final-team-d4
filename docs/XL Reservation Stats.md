@@ -2,7 +2,7 @@
 
 ## 0 Title & Team:
 
-XL Reservation Stats: Qingyuan Fan, Pan Lu, Somer Lillard, Yutong Wu.
+XL Reservation Stats: Qingyuan Fan, Pan Lu, Somer Lillard, Yutong Wu
 
 ## 1 Overview:
 
