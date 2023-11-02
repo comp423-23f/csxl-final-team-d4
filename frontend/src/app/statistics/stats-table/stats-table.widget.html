@@ -1,0 +1,16 @@
+<table>
+  <thead>
+    <tr>
+      <th>Statistic</th>
+      <th>Original Data</th>
+      <th *ngIf="compareData">Compare Data</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Mean</td>
+      <td>{{ mean.original }}</td>
+      <td *ngIf="compareData">{{ mean.compare }}</td>
+    </tr>
+  </tbody>
+</table>

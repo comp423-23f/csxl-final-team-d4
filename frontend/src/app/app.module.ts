@@ -42,6 +42,7 @@ import { NgChartsConfiguration, NgChartsModule } from 'ng2-charts';
 import { StatisticsComponent } from './statistics/statistics.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { StatsTable } from './statistics/stats-table/stats-table.widget';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     AboutComponent,
     GateComponent,
     ProfileEditorComponent,
-    StatisticsComponent
+    StatisticsComponent,
+    StatsTable
   ],
   imports: [
     /* Angular */
@@ -101,6 +103,7 @@ import { MatNativeDateModule } from '@angular/material/core';
     DatePipe,
     EventFilterPipe
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  exports: [StatsTable]
 })
 export class AppModule {}

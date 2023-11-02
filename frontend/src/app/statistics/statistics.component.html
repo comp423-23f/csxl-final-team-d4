@@ -61,3 +61,13 @@
     [legend]="lineChartLegend">
   </canvas>
 </div>
+
+<div class="stats-table">
+  <stats-table
+    [originalData_0]="
+      lineChartData.datasets[0] ? lineChartData.datasets[0].data : []
+    "
+    [compareData_0]="
+      lineChartData.datasets[1] ? lineChartData.datasets[1].data : []
+    " />
+</div>
