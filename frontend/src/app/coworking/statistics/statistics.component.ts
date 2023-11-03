@@ -3,18 +3,26 @@ import { ChartConfiguration, ChartOptions, ChartType } from 'chart.js';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Route } from '@angular/router';
 
 @Component({
-  selector: 'app-statistics',
+  selector: 'app-coworking-statistics',
   templateUrl: './statistics.component.html',
   styleUrls: ['./statistics.component.css']
 })
 export class StatisticsComponent {
+  public static Route: Route = {
+    path: 'statistics',
+    component: StatisticsComponent,
+    title: 'Registration Statistics'
+  };
+
   public displayChart = false;
   startDate!: Date | null;
   endDate!: Date | null;
   compareStartDate!: Date | null;
   compareEndDate!: Date | null;
+  statsDisplaySignal: boolean = false;
 
   title = 'Registration statistics';
   public lineChartLabels: string[] = [];
@@ -41,6 +49,7 @@ export class StatisticsComponent {
   };
 
   constructor() {}
+  //change the the enddate time to be 23:59:59 instead of 00:00:00 after selecting end date
   onEndDateChange(event: MatDatepickerInputEvent<Date>, signal: boolean): void {
     if (signal) {
       if (event.value) {
@@ -57,6 +66,7 @@ export class StatisticsComponent {
   getDayDifference = (start: Date, end: Date) => {
     return Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
   };
+  //method after clicking the the search, checks for alert, initilize and show graph
   fetchData(): void {
     if (this.startDate && this.endDate) {
       if (this.startDate > this.endDate) {
@@ -84,11 +94,6 @@ export class StatisticsComponent {
         ? this.getDayDifference(this.compareStartDate!, this.compareEndDate!)
         : 0;
     let maxLength = Math.max(mainDataRangeLength, compareDataRangeLength);
-    console.log(this.startDate);
-    console.log(this.endDate);
-    console.log('MainRange: ', mainDataRangeLength);
-    console.log('CompareRange: ', compareDataRangeLength);
-    console.log('Max:', maxLength);
     const labels: string[] = [];
     for (let i = 1; i <= maxLength; i++) {
       labels.push(`Day ${i}`);

@@ -38,11 +38,7 @@ import { AboutComponent } from './about/about.component';
 import { GateComponent } from './gate/gate.component';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
 import { EventFilterPipe } from './event/event-filter/event-filter.pipe';
-import { NgChartsConfiguration, NgChartsModule } from 'ng2-charts';
-import { StatisticsComponent } from './statistics/statistics.component';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { StatsTable } from './statistics/stats-table/stats-table.widget';
+import { NgChartsConfiguration } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -52,9 +48,7 @@ import { StatsTable } from './statistics/stats-table/stats-table.widget';
     HomeComponent,
     AboutComponent,
     GateComponent,
-    ProfileEditorComponent,
-    StatisticsComponent,
-    StatsTable
+    ProfileEditorComponent
   ],
   imports: [
     /* Angular */
@@ -82,9 +76,6 @@ import { StatsTable } from './statistics/stats-table/stats-table.widget';
     MatToolbarModule,
     FormsModule,
     RouterModule,
-    NgChartsModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => {
@@ -103,7 +94,6 @@ import { StatsTable } from './statistics/stats-table/stats-table.widget';
     DatePipe,
     EventFilterPipe
   ],
-  bootstrap: [AppComponent],
-  exports: [StatsTable]
+  bootstrap: [AppComponent]
 })
 export class AppModule {}

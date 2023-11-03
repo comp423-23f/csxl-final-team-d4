@@ -20,9 +20,10 @@
     <mat-datepicker #endPicker startView="month"></mat-datepicker>
   </mat-form-field>
 </div>
+
 <div>
   <mat-form-field appearance="fill">
-    <mat-label>（Optional）Start Date2</mat-label>
+    <mat-label>(Optional) Start Date2</mat-label>
     <input
       matInput
       [matDatepicker]="compareStartPicker"
@@ -34,7 +35,7 @@
   </mat-form-field>
 
   <mat-form-field appearance="fill">
-    <mat-label>（Optional）End Date2</mat-label>
+    <mat-label>(Optional) End Date2</mat-label>
     <input
       matInput
       [matDatepicker]="compareEndPicker"
@@ -47,7 +48,9 @@
     <mat-datepicker #compareEndPicker startView="month"></mat-datepicker>
   </mat-form-field>
 
-  <button mat-raised-button color="accent" (click)="fetchData()">Search</button>
+  <button mat-raised-button color="accent" (click)="fetchData()" type="button">
+    Search
+  </button>
 </div>
 
 <div *ngIf="displayChart" style="display: block">
@@ -58,8 +61,7 @@
     [type]="'line'"
     [data]="lineChartData"
     [options]="lineChartOptions"
-    [legend]="lineChartLegend">
-  </canvas>
+    [legend]="lineChartLegend"></canvas>
 </div>
 
 <div class="stats-table">
@@ -69,5 +71,7 @@
     "
     [compareData_0]="
       lineChartData.datasets[1] ? lineChartData.datasets[1].data : []
-    " />
+    ">
+    [displaySignal]= statsDisplaySignal;
+  </stats-table>
 </div>

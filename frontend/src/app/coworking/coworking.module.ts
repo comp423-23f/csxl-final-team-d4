@@ -14,6 +14,14 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { ReservationComponent } from './reservation/reservation.component';
+import { StatisticsComponent } from './statistics/statistics.component';
+import { StatsTable } from './widgets/stats-table/stats-table.widget';
+import { NgChartsConfiguration, NgChartsModule } from 'ng2-charts';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { Form, FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -22,7 +30,9 @@ import { ReservationComponent } from './reservation/reservation.component';
     AmbassadorPageComponent,
     CoworkingDropInCard,
     CoworkingReservationCard,
-    CoworkingHoursCard
+    CoworkingHoursCard,
+    StatisticsComponent,
+    StatsTable
   ],
   imports: [
     CommonModule,
@@ -33,7 +43,14 @@ import { ReservationComponent } from './reservation/reservation.component';
     MatExpansionModule,
     MatButtonModule,
     MatTableModule,
-    AsyncPipe
-  ]
+    AsyncPipe,
+    NgChartsModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule
+  ],
+  providers: [{ provide: NgChartsConfiguration }]
 })
 export class CoworkingModule {}
