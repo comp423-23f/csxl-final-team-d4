@@ -22,7 +22,6 @@ export class StatisticsComponent {
   endDate!: Date | null;
   compareStartDate!: Date | null;
   compareEndDate!: Date | null;
-  statsDisplaySignal: boolean = false;
 
   title = 'Registration statistics';
   public lineChartLabels: string[] = [];
@@ -101,7 +100,7 @@ export class StatisticsComponent {
     this.lineChartData.labels = labels;
     this.lineChartData.datasets = [
       {
-        data: [15, 9, 10, 21, 6, 5, 20],
+        data: [15, 19, 10, 21, 62, 5, 20],
         label: 'Registration',
         fill: false,
         tension: 0.5,
@@ -112,7 +111,7 @@ export class StatisticsComponent {
 
     if (this.compareStartDate && this.compareEndDate) {
       this.lineChartData.datasets.push({
-        data: [10, 15, 8, 18, 9, 10, 25],
+        data: [0, 15, 8, 18, 9, 10, 25],
         label: 'Comparison',
         fill: false,
         tension: 0.5,
