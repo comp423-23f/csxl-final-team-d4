@@ -2,6 +2,7 @@
 
 This API is used to make and manage reservations."""
 
+from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
 from ..authentication import registered_user
 from ...services.coworking.reservation import ReservationService
@@ -12,7 +13,6 @@ from ...models.coworking import (
     ReservationPartial,
     ReservationState,
 )
-from datatime import date
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
@@ -69,8 +69,8 @@ def cancel_reservation(
 
 @api.get("/reservation/statistics", tags=["Coworking"])
 def count_reservations(
-    start_date: date,
-    end_date: date,
+    start_date: datetime,
+    end_date: datetime,
     subject: User = Depends(registered_user),
     reservation_svc: ReservationService = Depends(),
 ) -> int:

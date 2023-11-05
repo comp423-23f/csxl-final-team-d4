@@ -4,6 +4,7 @@ from fastapi import Depends
 from datetime import datetime, timedelta
 from random import random
 from typing import Sequence
+from sqlalchemy import Date
 from sqlalchemy.orm import Session, joinedload
 from ...database import db_session
 from ...models.user import User, UserIdentity
@@ -669,3 +670,48 @@ class ReservationService:
             if len(seat.availability) > 0:
                 available_seats.append(seat)
         return available_seats
+
+    def _get_active_reservations(self, time_range: TimeRange) -> Sequence[Reservation]:
+        reservations = (
+            self._session.query(ReservationEntity)
+            .join(ReservationEntity.users)
+            .filter(
+                ReservationEntity.start < time_range.end,
+                ReservationEntity.end > time_range.start,
+                ReservationEntity.state.not_in(
+                    [ReservationState.CANCELLED, ReservationState.CHECKED_OUT]
+                ),
+            )
+            .options(
+                joinedload(ReservationEntity.users), joinedload(ReservationEntity.seats)
+            )
+            .order_by(ReservationEntity.start)
+            .all()
+        )
+
+        reservations = self._state_transition_reservation_entities_by_time(
+            datetime.now(), reservations
+        )
+
+        return [reservation.to_model() for reservation in reservations]
+
+    def count_reservations(
+        self, subject: User, startDate: datetime, endDate: datetime
+    ) -> int:
+        """View all the reservations in the given time range.
+
+        This method queries all past events from the start date to end date.
+
+        Args:
+            subject (User): The user initiating the reservation change request.
+            startDate (Date): The start date we want to query.
+            endDate (Date): The end date of query.
+
+        Returns:
+            int - count of all the reservations in the given time frame.
+        """
+        time_range = TimeRange(
+            start=startDate,
+            end=endDate,
+        )
+        return len(self._get_active_reservations(time_range))
