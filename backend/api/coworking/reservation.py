@@ -64,17 +64,3 @@ def cancel_reservation(
     return reservation_svc.change_reservation(
         subject, ReservationPartial(id=id, state=ReservationState.CANCELLED)
     )
-
-
-# @api.get("/reservation/statistics", tags=["Coworking"])
-# def count_reservations(
-#     start_date: date,
-#     end_date: date,
-#     subject: User = Depends(registered_user),
-#     reservation_svc: ReservationService = Depends(),
-# ) -> int:
-#     """Count the number of reservation requests between a start date and end date."""
-#     reservation_count = reservation_svc.count_reservations(
-#         subject, start_date, end_date
-#     )
-#     return reservation_count
