@@ -12,7 +12,6 @@ from ...models.coworking import (
     ReservationPartial,
     ReservationState,
 )
-from datatime import date
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
@@ -67,15 +66,15 @@ def cancel_reservation(
     )
 
 
-@api.get("/reservation/statistics", tags=["Coworking"])
-def count_reservations(
-    start_date: date,
-    end_date: date,
-    subject: User = Depends(registered_user),
-    reservation_svc: ReservationService = Depends(),
-) -> int:
-    """Count the number of reservation requests between a start date and end date."""
-    reservation_count = reservation_svc.count_reservations(
-        subject, start_date, end_date
-    )
-    return reservation_count
+# @api.get("/reservation/statistics", tags=["Coworking"])
+# def count_reservations(
+#     start_date: date,
+#     end_date: date,
+#     subject: User = Depends(registered_user),
+#     reservation_svc: ReservationService = Depends(),
+# ) -> int:
+#     """Count the number of reservation requests between a start date and end date."""
+#     reservation_count = reservation_svc.count_reservations(
+#         subject, start_date, end_date
+#     )
+#     return reservation_count

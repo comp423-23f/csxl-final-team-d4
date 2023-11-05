@@ -669,3 +669,33 @@ class ReservationService:
             if len(seat.availability) > 0:
                 available_seats.append(seat)
         return available_seats
+
+    def get_seat_reservations(self, time_range: TimeRange) -> Sequence[Reservation]:
+        """Returns all reservations for a set of seats in a given time range.
+
+        Args:
+            seats (Sequence[Seat]): The list of seats to query for reservations.
+            time_range (TimeRange): The date range to check for matching reservations.
+
+        Returns:
+            Sequence[Reservation]: All reservations for the seats within the given time_range, including overlaps.
+        """
+        reservations = (
+            self._session.query(ReservationEntity)
+            .join(ReservationEntity.seats)
+            .filter(
+                ReservationEntity.start < time_range.end,
+                ReservationEntity.end > time_range.start,
+                ReservationEntity.state.not_in(
+                    [ReservationState.CANCELLED, ReservationState.CHECKED_OUT]
+                ),
+            )
+            .options(joinedload(ReservationEntity.users))
+            .all()
+        )
+
+        reservations = self._state_transition_reservation_entities_by_time(
+            datetime.now(), reservations
+        )
+
+        return [reservation.to_model() for reservation in reservations]
