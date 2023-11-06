@@ -22,6 +22,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { Form, FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { SearchReports } from './widgets/search-reports/search-reports.widget';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,9 @@ import { MatInputModule } from '@angular/material/input';
     MatNativeDateModule,
     FormsModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatExpansionModule,
+    SearchReports
   ],
   providers: [{ provide: NgChartsConfiguration }]
 })

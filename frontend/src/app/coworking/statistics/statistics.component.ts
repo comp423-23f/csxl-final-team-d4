@@ -123,4 +123,6 @@ export class StatisticsComponent {
       this.displayChart = true;
     }, 0);
   }
+  // method for getting all info (first date, second, and graph) for saving
+  getAllDates(): void {}
 }
