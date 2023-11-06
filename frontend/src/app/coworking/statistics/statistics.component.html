@@ -53,10 +53,8 @@
   </button>
 </div>
 
-<div>
+<div *ngIf="displayChart" style="display: block">
   <canvas
-    *ngIf="displayChart"
-    style="display: block"
     baseChart
     width="600"
     height="400"
@@ -64,13 +62,6 @@
     [data]="lineChartData"
     [options]="lineChartOptions"
     [legend]="lineChartLegend"></canvas>
-</div>
-<div>
-  <button>
-    <mat-slide-toggle [checked]="switchState" (change)="onSwitchChange($event)">
-      Switch Data
-    </mat-slide-toggle>
-  </button>
 </div>
 
 <div class="stats-table">

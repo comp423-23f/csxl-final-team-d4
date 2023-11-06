@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { ChartConfiguration, ChartOptions, ChartType } from 'chart.js';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Route } from '@angular/router';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-coworking-statistics',
@@ -21,30 +23,15 @@ export class StatisticsComponent {
   endDate!: Date | null;
   compareStartDate!: Date | null;
   compareEndDate!: Date | null;
-  public switchState: boolean = false;
+
+  title = 'Registration statistics';
+  public lineChartLabels: string[] = [];
   public lineChartData: ChartConfiguration<'line'>['data'] = {
     labels: [],
     datasets: []
   };
-
-  title = 'Registration statistics';
-  public lineChartLabels: string[] = [];
   public lineChartOptions: ChartOptions<'line'> = {
-    responsive: false,
-    scales: {
-      x: {
-        title: {
-          display: true,
-          text: 'Date'
-        }
-      },
-      y: {
-        title: {
-          display: true,
-          text: 'Number of Registration'
-        }
-      }
-    }
+    responsive: false
   };
   public lineChartLegend = true;
 
@@ -61,7 +48,13 @@ export class StatisticsComponent {
     return true;
   };
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
+  private formatDateComponents(date: Date): [number, number, number] {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1; // JavaScript months are 0-indexed
+    const day = date.getDate();
+    return [year, month, day];
+  }
   //change the the enddate time to be 23:59:59 instead of 00:00:00 after selecting end date
   onEndDateChange(event: MatDatepickerInputEvent<Date>, signal: boolean): void {
     if (signal) {
@@ -97,87 +90,63 @@ export class StatisticsComponent {
         'Even if the compare is optional, it does not mean you can put end date ahead of startdate :)'
       );
     }
+    //BELOW IS HOW THE DATA IS CONNECTED TO THE FRONOTEND, BUT I DONT KNOW HOW TO DO ASYNCRONOUS PROGRAMMING AND THHE STRUCTURE OF THE FRONTEND NEED TO BE CHANGED
+    let startYear, startMonth, startDay;
+    let endYear, endMonth, endDay;
+    if (this.startDate && this.endDate) {
+      [startYear, startMonth, startDay] = this.formatDateComponents(
+        this.startDate
+      );
+      [endYear, endMonth, endDay] = this.formatDateComponents(this.endDate);
+    }
+    const endpoint = `/api/coworking/statistics/get-daily?year_start=${startYear}&month_start=${startMonth}&day_start=${startDay}&year_end=${endYear}&month_end=${endMonth}&day_end=${endDay}`;
+    this.http.get(endpoint).subscribe({
+      next: (data) => {
+        console.log(data);
+      },
+      error: (error) => {
+        console.error('There was an error fetching the data', error);
+      }
+    });
+    //THIS IS HOW TO GET THE DATA AS YOU CAN SEE FROM THE CONSOLE, BUT WE STILL NEED TO MAKE THE DATA INPUT
     this.displayChart = false;
-    if (!this.switchState) {
-      let mainDataRangeLength = this.getDayDifference(
-        this.startDate!,
-        this.endDate!
-      );
-      let compareDataRangeLength =
-        this.compareStartDate && this.compareEndDate
-          ? this.getDayDifference(this.compareStartDate!, this.compareEndDate!)
-          : 0;
-      let maxLength = Math.max(mainDataRangeLength, compareDataRangeLength);
-      const labels: string[] = [];
-      for (let i = 1; i <= maxLength; i++) {
-        labels.push(`Day ${i}`);
+    let mainDataRangeLength = this.getDayDifference(
+      this.startDate!,
+      this.endDate!
+    );
+    let compareDataRangeLength =
+      this.compareStartDate && this.compareEndDate
+        ? this.getDayDifference(this.compareStartDate!, this.compareEndDate!)
+        : 0;
+    let maxLength = Math.max(mainDataRangeLength, compareDataRangeLength);
+    const labels: string[] = [];
+    for (let i = 1; i <= maxLength; i++) {
+      labels.push(`Day ${i}`);
+    }
+    this.lineChartData.labels = labels;
+    this.lineChartData.datasets = [
+      {
+        data: [15, 19, 10, 21, 62, 5, 20],
+        label: 'Registration',
+        fill: false,
+        tension: 0.5,
+        borderColor: 'pink',
+        backgroundColor: 'rgba(255,0,0,0.3)'
       }
-      this.lineChartData.labels = labels;
-      this.lineChartData.datasets = [
-        {
-          data: [15, 19, 10, 21, 92, 5, 90, 5, 7],
-          label: 'Registration',
-          fill: false,
-          tension: 0.5,
-          borderColor: 'pink',
-          backgroundColor: 'rgba(255,0,0,0.3)'
-        }
-      ];
+    ];
 
-      if (this.compareStartDate && this.compareEndDate) {
-        this.lineChartData.datasets.push({
-          data: [0, 15, 8, 88, 79, 10, 25, 1, 0],
-          label: 'Comparison',
-          fill: false,
-          tension: 0.5,
-          borderColor: 'blue',
-          backgroundColor: 'rgba(0,0,255,0.3)'
-        });
-      }
-    } else {
-      let mainDataRangeLength = this.getDayDifference(
-        this.startDate!,
-        this.endDate!
-      );
-      let compareDataRangeLength =
-        this.compareStartDate && this.compareEndDate
-          ? this.getDayDifference(this.compareStartDate!, this.compareEndDate!)
-          : 0;
-      let maxLength = Math.max(mainDataRangeLength, compareDataRangeLength);
-      const labels: string[] = [];
-      for (let i = 1; i <= maxLength; i++) {
-        labels.push(`Day ${i}`);
-      }
-      this.lineChartData.labels = labels;
-      this.lineChartData.datasets = [
-        {
-          data: [65, 19, 10, 21, 12, 5, 10],
-          label: 'Registration',
-          fill: false,
-          tension: 0.5,
-          borderColor: 'pink',
-          backgroundColor: 'rgba(255,0,0,0.3)'
-        }
-      ];
-
-      if (this.compareStartDate && this.compareEndDate) {
-        this.lineChartData.datasets.push({
-          data: [0, 5, 8, 18, 9, 70, 5],
-          label: 'Comparison',
-          fill: false,
-          tension: 0.5,
-          borderColor: 'blue',
-          backgroundColor: 'rgba(0,0,255,0.3)'
-        });
-      }
+    if (this.compareStartDate && this.compareEndDate) {
+      this.lineChartData.datasets.push({
+        data: [0, 15, 8, 18, 9, 10, 25],
+        label: 'Comparison',
+        fill: false,
+        tension: 0.5,
+        borderColor: 'blue',
+        backgroundColor: 'rgba(0,0,255,0.3)'
+      });
     }
     setTimeout(() => {
       this.displayChart = true;
     }, 0);
-  }
-
-  onSwitchChange(event: MatSlideToggleChange): void {
-    this.switchState = event.checked;
-    this.fetchData();
   }
 }
