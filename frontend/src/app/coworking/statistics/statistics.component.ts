@@ -22,13 +22,13 @@ export class StatisticsComponent {
   compareStartDate!: Date | null;
   compareEndDate!: Date | null;
   public switchState: boolean = false;
-
-  title = 'Registration statistics';
-  public lineChartLabels: string[] = [];
   public lineChartData: ChartConfiguration<'line'>['data'] = {
     labels: [],
     datasets: []
   };
+
+  title = 'Registration statistics';
+  public lineChartLabels: string[] = [];
   public lineChartOptions: ChartOptions<'line'> = {
     responsive: false
   };
@@ -84,99 +84,78 @@ export class StatisticsComponent {
       );
     }
     this.displayChart = false;
-    let mainDataRangeLength = this.getDayDifference(
-      this.startDate!,
-      this.endDate!
-    );
-    let compareDataRangeLength =
-      this.compareStartDate && this.compareEndDate
-        ? this.getDayDifference(this.compareStartDate!, this.compareEndDate!)
-        : 0;
-    let maxLength = Math.max(mainDataRangeLength, compareDataRangeLength);
-    const labels: string[] = [];
-    for (let i = 1; i <= maxLength; i++) {
-      labels.push(`Day ${i}`);
-    }
-    this.lineChartData.labels = labels;
-    this.lineChartData.datasets = [
-      {
-        data: [15, 19, 10, 21, 62, 5, 20],
-        label: 'Registration',
-        fill: false,
-        tension: 0.5,
-        borderColor: 'pink',
-        backgroundColor: 'rgba(255,0,0,0.3)'
+    if (!this.switchState) {
+      let mainDataRangeLength = this.getDayDifference(
+        this.startDate!,
+        this.endDate!
+      );
+      let compareDataRangeLength =
+        this.compareStartDate && this.compareEndDate
+          ? this.getDayDifference(this.compareStartDate!, this.compareEndDate!)
+          : 0;
+      let maxLength = Math.max(mainDataRangeLength, compareDataRangeLength);
+      const labels: string[] = [];
+      for (let i = 1; i <= maxLength; i++) {
+        labels.push(`Day ${i}`);
       }
-    ];
+      this.lineChartData.labels = labels;
+      this.lineChartData.datasets = [
+        {
+          data: [15, 19, 10, 21, 92, 5, 90, 5, 7],
+          label: 'Registration',
+          fill: false,
+          tension: 0.5,
+          borderColor: 'pink',
+          backgroundColor: 'rgba(255,0,0,0.3)'
+        }
+      ];
 
-    if (this.compareStartDate && this.compareEndDate) {
-      this.lineChartData.datasets.push({
-        data: [0, 15, 8, 18, 9, 10, 25],
-        label: 'Comparison',
-        fill: false,
-        tension: 0.5,
-        borderColor: 'blue',
-        backgroundColor: 'rgba(0,0,255,0.3)'
-      });
-    }
-    setTimeout(() => {
-      this.displayChart = true;
-    }, 0);
-  }
-
-  fetchDataa(): void {
-    console.log('FetchDataa called');
-    if (this.startDate && this.endDate) {
-      if (this.startDate > this.endDate) {
-        window.alert('Enddate cannot precede startDate');
+      if (this.compareStartDate && this.compareEndDate) {
+        this.lineChartData.datasets.push({
+          data: [0, 15, 8, 88, 79, 10, 25, 1, 0],
+          label: 'Comparison',
+          fill: false,
+          tension: 0.5,
+          borderColor: 'blue',
+          backgroundColor: 'rgba(0,0,255,0.3)'
+        });
       }
     } else {
-      window.alert('StartDate and endDate cannot be empty');
-    }
-    if (
-      this.compareEndDate &&
-      this.compareStartDate &&
-      this.compareStartDate > this.compareEndDate
-    ) {
-      window.alert(
-        'Even if the compare is optional, it does not mean you can put end date ahead of startdate :)'
+      let mainDataRangeLength = this.getDayDifference(
+        this.startDate!,
+        this.endDate!
       );
-    }
-    this.displayChart = false;
-    let mainDataRangeLength = this.getDayDifference(
-      this.startDate!,
-      this.endDate!
-    );
-    let compareDataRangeLength =
-      this.compareStartDate && this.compareEndDate
-        ? this.getDayDifference(this.compareStartDate!, this.compareEndDate!)
-        : 0;
-    let maxLength = Math.max(mainDataRangeLength, compareDataRangeLength);
-    const labels: string[] = [];
-    for (let i = 1; i <= maxLength; i++) {
-      labels.push(`Day ${i}`);
-    }
-    this.lineChartData.labels = labels;
-    this.lineChartData.datasets = [
-      {
-        data: [15, 69, 60, 21, 62, 5, 20],
-        label: 'Registration',
-        fill: false,
-        tension: 0.5,
-        borderColor: 'pink',
-        backgroundColor: 'rgba(255,0,0,0.3)'
+      let compareDataRangeLength =
+        this.compareStartDate && this.compareEndDate
+          ? this.getDayDifference(this.compareStartDate!, this.compareEndDate!)
+          : 0;
+      let maxLength = Math.max(mainDataRangeLength, compareDataRangeLength);
+      const labels: string[] = [];
+      for (let i = 1; i <= maxLength; i++) {
+        labels.push(`Day ${i}`);
       }
-    ];
+      this.lineChartData.labels = labels;
+      this.lineChartData.datasets = [
+        {
+          data: [65, 19, 10, 21, 12, 5, 10],
+          label: 'Registration',
+          fill: false,
+          tension: 0.5,
+          borderColor: 'pink',
+          backgroundColor: 'rgba(255,0,0,0.3)'
+        }
+      ];
 
-    if (this.compareStartDate && this.compareEndDate) {
-      this.lineChartData.datasets.push({
-        data: [0, 15, 8, 18, 9, 10, 25],
-        label: 'Comparison',
-        fill: false,
-        tension: 0.5,
-        borderColor: 'blue',
-        backgroundColor: 'rgba(0,0,255,0.3)'
-      });
+      if (this.compareStartDate && this.compareEndDate) {
+        this.lineChartData.datasets.push({
+          data: [0, 5, 8, 18, 9, 70, 5],
+          label: 'Comparison',
+          fill: false,
+          tension: 0.5,
+          borderColor: 'blue',
+          backgroundColor: 'rgba(0,0,255,0.3)'
+        });
+      }
     }
     setTimeout(() => {
       this.displayChart = true;
@@ -184,12 +163,7 @@ export class StatisticsComponent {
   }
 
   onSwitchChange(event: MatSlideToggleChange): void {
-    console.log('onSwtichMethod triggered');
-    if (this.switchState) {
-      this.fetchData();
-    } else {
-      this.fetchDataa();
-    }
     this.switchState = event.checked;
+    this.fetchData();
   }
 }
