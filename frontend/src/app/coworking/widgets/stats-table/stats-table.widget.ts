@@ -105,11 +105,9 @@ export class StatsTable {
     const outLiers = values
       .map((value, index) => {
         const isOutlier = value < lowerBound || value > upperBound;
-        console.log('for index ', index, 'the value is: ', value);
         return isOutlier ? `Day ${index + 1}` : null;
       })
       .filter((v) => v !== null) as string[];
-    console.log(outLiers);
     return outLiers;
   }
 

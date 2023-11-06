@@ -30,7 +30,21 @@ export class StatisticsComponent {
   title = 'Registration statistics';
   public lineChartLabels: string[] = [];
   public lineChartOptions: ChartOptions<'line'> = {
-    responsive: false
+    responsive: false,
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Date'
+        }
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Number of Registration'
+        }
+      }
+    }
   };
   public lineChartLegend = true;
 
