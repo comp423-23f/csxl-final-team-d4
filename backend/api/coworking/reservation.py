@@ -2,6 +2,7 @@
 
 This API is used to make and manage reservations."""
 
+from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
 from ..authentication import registered_user
 from ...services.coworking.reservation import ReservationService
@@ -64,3 +65,35 @@ def cancel_reservation(
     return reservation_svc.change_reservation(
         subject, ReservationPartial(id=id, state=ReservationState.CANCELLED)
     )
+
+
+@api.get("/statistics/get-daily", tags=["Coworking"])
+def get_daily_reservation_counts(
+    year_start: int,
+    month_start: int,
+    day_start: int,
+    year_end: int,
+    month_end: int,
+    day_end: int,
+    subject: User = Depends(registered_user),
+    reservation_svc: ReservationService = Depends(),
+) -> dict:
+    """Get daily reservation counts start and end dates specified as year, month, day."""
+    try:
+        # Constructing the datetime for the start of the day
+        start_date = datetime(year=year_start, month=month_start, day=day_start)
+
+        # Constructing the datetime for the end of day
+        end_date = datetime(
+            year=year_end, month=month_end, day=day_end, hour=23, minute=59, second=59
+        )
+        print("Start:", start_date)
+
+    except ValueError as exc:
+        # Handle cases when an invali date is provided
+        raise HTTPException(status_code=400, detail=f"Invalid date: {exc}")
+
+    # Fetch the reservation counts using the constructed start and end dates
+    counts = reservation_svc.count_reservations_by_date(subject, start_date, end_date)
+
+    return counts
