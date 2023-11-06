@@ -1,11 +1,14 @@
 """Service that manages reservations in the coworking space."""
 
 from fastapi import Depends
+from collections import defaultdict
 from datetime import datetime, timedelta
 from random import random
 from typing import Sequence
-from sqlalchemy import Date
+from sqlalchemy import Date, func
 from sqlalchemy.orm import Session, joinedload
+
+from backend.entities.coworking import reservation_entity
 from ...database import db_session
 from ...models.user import User, UserIdentity
 from ..exceptions import UserPermissionException, ResourceNotFoundException
@@ -326,7 +329,7 @@ class ReservationService:
     def draft_reservation(
         self, subject: User, request: ReservationRequest
     ) -> Reservation:
-        """When a user begins the process of making a reservation, a draft holds its place until confired.
+        """When a user begins the process of making a reservation, a draft holds its place until confirmed.
 
         For launch, reservations are limited to a single user. Reservations must either be made by and for
         the subject initiating the request, or by an admin with permission to complete the action
@@ -715,3 +718,32 @@ class ReservationService:
             end=endDate,
         )
         return len(self._get_active_reservations(time_range))
+
+    def count_reservations_by_date(
+        self, subject: User, start_date: datetime, end_date: datetime
+    ) -> dict:
+        self._permission_svc.enforce(subject, "coworking.reservation.read", f"user/")
+        reservation_counts = defaultdict(int)
+        reservations = (
+            self._session.query(
+                func.date(ReservationEntity.start).label("date"),
+                func.count("*").label("count"),
+            )
+            .filter(
+                ReservationEntity.start >= start_date,
+                ReservationEntity.start < end_date + timedelta(days=1),
+                ReservationEntity.state.not_in([ReservationState.CANCELLED]),
+            )
+            .group_by("date")
+            .all()
+        )
+
+        current_date = start_date
+        while current_date <= end_date:
+            reservation_counts[current_date.date()] = 0
+            current_date += timedelta(days=1)
+
+        for reservation in reservations:
+            reservation_date, count = reservation
+            reservation_counts[reservation_date] = count
+        return reservation_counts
