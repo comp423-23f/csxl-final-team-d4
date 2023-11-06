@@ -23,6 +23,7 @@ import { Form, FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { SearchReports } from './widgets/search-reports/search-reports.widget';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [
@@ -51,8 +52,10 @@ import { SearchReports } from './widgets/search-reports/search-reports.widget';
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
+    s1-graph
     MatExpansionModule,
-    SearchReports
+    SearchReports,
+    MatSlideToggleModule
   ],
   providers: [{ provide: NgChartsConfiguration }]
 })

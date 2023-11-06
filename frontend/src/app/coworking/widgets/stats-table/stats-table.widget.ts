@@ -102,13 +102,13 @@ export class StatsTable {
     const lowerBound = q1 - 1.5 * iqr;
     const upperBound = q3 + 1.5 * iqr;
 
-    const outliers = sortedValues
+    const outLiers = values
       .map((value, index) => {
         const isOutlier = value < lowerBound || value > upperBound;
         return isOutlier ? `Day ${index + 1}` : null;
       })
       .filter((v) => v !== null) as string[];
-    return outliers;
+    return outLiers;
   }
 
   private quantile(sortedValues: number[], q: number): number {
