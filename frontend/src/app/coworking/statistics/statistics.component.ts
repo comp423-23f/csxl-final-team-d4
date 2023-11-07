@@ -1,10 +1,7 @@
 import { Component } from '@angular/core';
 import { ChartConfiguration, ChartOptions, ChartType } from 'chart.js';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { ViewChild } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { Route } from '@angular/router';
-import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-coworking-statistics',
@@ -124,6 +121,6 @@ export class StatisticsComponent {
       this.displayChart = true;
     }, 0);
   }
-  // method for getting all info (first date, second, and graph) for saving
+  // method for getting all info (first date, second, and graph) for saving currently not implemetned
   getAllDates(): void {}
 }
