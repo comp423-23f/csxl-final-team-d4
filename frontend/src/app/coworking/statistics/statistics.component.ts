@@ -4,6 +4,7 @@ import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Route } from '@angular/router';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-coworking-statistics',

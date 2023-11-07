@@ -52,7 +52,6 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
-    s1-graph
     MatExpansionModule,
     SearchReports,
     MatSlideToggleModule
