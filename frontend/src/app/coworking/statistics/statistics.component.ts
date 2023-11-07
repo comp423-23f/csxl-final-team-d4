@@ -4,8 +4,7 @@ import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Route } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-coworking-statistics',
@@ -49,13 +48,7 @@ export class StatisticsComponent {
     return true;
   };
 
-  constructor(private http: HttpClient) {}
-  private formatDateComponents(date: Date): [number, number, number] {
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1; // JavaScript months are 0-indexed
-    const day = date.getDate();
-    return [year, month, day];
-  }
+  constructor() {}
   //change the the enddate time to be 23:59:59 instead of 00:00:00 after selecting end date
   onEndDateChange(event: MatDatepickerInputEvent<Date>, signal: boolean): void {
     if (signal) {
@@ -74,7 +67,7 @@ export class StatisticsComponent {
     return Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
   };
   //method after clicking the the search, checks for alert, initilize and show graph
-  fetchData() {
+  fetchData(): void {
     if (this.startDate && this.endDate) {
       if (this.startDate > this.endDate) {
         window.alert('Enddate cannot precede startDate');
@@ -91,7 +84,6 @@ export class StatisticsComponent {
         'Even if the compare is optional, it does not mean you can put end date ahead of startdate :)'
       );
     }
-    //THIS IS HOW TO GET THE DATA AS YOU CAN SEE FROM THE CONSOLE, BUT WE STILL NEED TO MAKE THE DATA INPUT
     this.displayChart = false;
     let mainDataRangeLength = this.getDayDifference(
       this.startDate!,
@@ -107,36 +99,16 @@ export class StatisticsComponent {
       labels.push(`Day ${i}`);
     }
     this.lineChartData.labels = labels;
-    //BELOW IS HOW THE DATA IS CONNECTED TO THE FRONOTEND, BUT I DONT KNOW HOW TO DO ASYNCRONOUS PROGRAMMING AND THHE STRUCTURE OF THE FRONTEND NEED TO BE CHANGED
-    let startYear, startMonth, startDay;
-    let endYear, endMonth, endDay;
-    if (this.startDate && this.endDate) {
-      [startYear, startMonth, startDay] = this.formatDateComponents(
-        this.startDate
-      );
-      [endYear, endMonth, endDay] = this.formatDateComponents(this.endDate);
-    }
-    const endpoint = `/api/coworking/statistics/get-daily?year_start=${startYear}&month_start=${startMonth}&day_start=${startDay}&year_end=${endYear}&month_end=${endMonth}&day_end=${endDay}`;
-    let firstdata: any[] = [];
-    let comparedata: any[] = [];
-    this.http.get(endpoint).subscribe({
-      next: (data) => {
-        console.log(data);
-        this.lineChartData.datasets = [
-          {
-            data: Object.values(data),
-            label: 'Registration',
-            fill: false,
-            tension: 0.5,
-            borderColor: 'pink',
-            backgroundColor: 'rgba(255,0,0,0.3)'
-          }
-        ];
-      },
-      error: (error) => {
-        console.error('There was an error fetching the data', error);
+    this.lineChartData.datasets = [
+      {
+        data: [15, 19, 10, 21, 62, 5, 20],
+        label: 'Registration',
+        fill: false,
+        tension: 0.5,
+        borderColor: 'pink',
+        backgroundColor: 'rgba(255,0,0,0.3)'
       }
-    });
+    ];
 
     if (this.compareStartDate && this.compareEndDate) {
       this.lineChartData.datasets.push({
@@ -150,6 +122,8 @@ export class StatisticsComponent {
     }
     setTimeout(() => {
       this.displayChart = true;
-    }, 500);
+    }, 0);
   }
+  // method for getting all info (first date, second, and graph) for saving
+  getAllDates(): void {}
 }

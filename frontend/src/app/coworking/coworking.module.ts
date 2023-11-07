@@ -22,6 +22,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { Form, FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { SearchReports } from './widgets/search-reports/search-reports.widget';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
@@ -51,6 +52,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
+    MatExpansionModule,
+    SearchReports,
     MatSlideToggleModule
   ],
   providers: [{ provide: NgChartsConfiguration }]

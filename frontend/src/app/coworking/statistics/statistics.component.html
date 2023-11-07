@@ -47,10 +47,20 @@
       [for]="compareEndPicker"></mat-datepicker-toggle>
     <mat-datepicker #compareEndPicker startView="month"></mat-datepicker>
   </mat-form-field>
-
-  <button mat-raised-button color="accent" (click)="fetchData()" type="button">
-    Search
-  </button>
+  <div class="horizontal-container">
+    <button
+      mat-raised-button
+      color="accent"
+      (click)="fetchData()"
+      type="button"
+      class="search">
+      Search
+    </button>
+    <button mat-raised-button color="accent" type="button" class="save">
+      Save
+    </button>
+    <search-reports>Reports</search-reports>
+  </div>
 </div>
 
 <div *ngIf="displayChart" style="display: block">

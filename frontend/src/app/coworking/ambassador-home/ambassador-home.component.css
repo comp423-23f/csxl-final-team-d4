@@ -1,3 +1,7 @@
 .mat-mdc-card {
     max-width: 100%;
 }
+
+.viewStats{
+    margin-left: 15px;
+}

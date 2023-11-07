@@ -1,0 +1,11 @@
+.search{
+    margin: 10px;
+}
+.save{
+margin-right: 10px;
+}
+.horizontal-container {
+    display: flex; /* Use flexbox */
+    align-items: center; /* Align items vertically at the center */
+  }
+
