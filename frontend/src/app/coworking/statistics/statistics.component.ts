@@ -150,6 +150,6 @@ export class StatisticsComponent {
     }
     setTimeout(() => {
       this.displayChart = true;
-    }, 500);
+    }, 450);
   }
 }
