@@ -8,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { HttpClient } from '@angular/common/http';
 import { MatNativeDateModule } from '@angular/material/core';
 
+
 @Component({
   selector: 'app-coworking-statistics',
   templateUrl: './statistics.component.html',
@@ -150,6 +151,11 @@ export class StatisticsComponent {
     }
     setTimeout(() => {
       this.displayChart = true;
-    }, 450);
+
+    }, 0);
   }
+  // method for getting all info (first date, second, and graph) for saving currently not implemetned
+  getAllDates(): void {}
+
+
 }
