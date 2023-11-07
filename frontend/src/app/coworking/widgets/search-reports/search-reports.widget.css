@@ -1,0 +1,31 @@
+.mat-mdc-form-field + .mat-mdc-form-field {
+    margin-left: 8px;
+}
+
+.custom-accordion {
+    width: 100px; /* N/A */
+  }
+  .custom-expansion-panel {
+    width: 300px;
+    padding: 10px; /* whole panel */
+  }
+  .custom-expansion-panel-header {
+    font-size: 15px; /* N/A */
+  }
+  .custom-panel-title {
+    font-size: 14px; /* Reports */
+  }
+  .custom-panel-description {
+    font-size: 14px; /* Saved search queries */
+  }
+  .custom-panel-content {
+    font-size: 14px; /* Report 1 */
+  }
+  .custom-panel-button {
+    font-size: 12px; /* Share */
+    margin-left: 10px;
+    color: white;
+    background-color: #e83a57;
+    border-color: gray;
+  }
+  

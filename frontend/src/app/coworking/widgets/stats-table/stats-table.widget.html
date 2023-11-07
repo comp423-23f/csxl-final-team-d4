@@ -1,0 +1,39 @@
+<table *ngIf="originalData.length">
+  <thead>
+    <tr>
+      <th>Statistic</th>
+      <th>Original Data</th>
+      <th *ngIf="compareData.length">Compare Data</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Mean</td>
+      <td>{{ mean.original }}</td>
+      <td *ngIf="compareData.length">{{ mean.compare }}</td>
+    </tr>
+    <tr>
+      <td>Median</td>
+      <td>{{ median.original }}</td>
+      <td *ngIf="compareData.length">{{ median.compare }}</td>
+    </tr>
+    <tr>
+      <td>Standard Deviation</td>
+      <td>{{ sd.original }}</td>
+      <td *ngIf="compareData.length">{{ sd.compare }}</td>
+    </tr>
+    <tr>
+      <td>Outliers</td>
+      <td>
+        <ul>
+          <li *ngFor="let outlier of outliers.original">{{ outlier }}</li>
+        </ul>
+      </td>
+      <td *ngIf="compareData.length">
+        <ul>
+          <li *ngFor="let outlier of outliers.compare">{{ outlier }}</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>

@@ -2,11 +2,14 @@
 
 from collections import defaultdict
 from fastapi import Depends
+from collections import defaultdict
 from datetime import datetime, timedelta
 from random import random
 from typing import Sequence
 from sqlalchemy import Date, func
 from sqlalchemy.orm import Session, joinedload
+
+from backend.entities.coworking import reservation_entity
 from ...database import db_session
 from ...models.user import User, UserIdentity
 from ..exceptions import UserPermissionException, ResourceNotFoundException
@@ -327,7 +330,7 @@ class ReservationService:
     def draft_reservation(
         self, subject: User, request: ReservationRequest
     ) -> Reservation:
-        """When a user begins the process of making a reservation, a draft holds its place until confired.
+        """When a user begins the process of making a reservation, a draft holds its place until confirmed.
 
         For launch, reservations are limited to a single user. Reservations must either be made by and for
         the subject initiating the request, or by an admin with permission to complete the action

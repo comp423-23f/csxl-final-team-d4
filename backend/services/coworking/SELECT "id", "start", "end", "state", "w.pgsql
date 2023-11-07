@@ -1,0 +1,1 @@
+SELECT "id", "start", "end", "state", "walkin", "room_id", "created_at", "updated_at" FROM "coworking__reservation" LIMIT 20;
