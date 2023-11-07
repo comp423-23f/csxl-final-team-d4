@@ -1,5 +1,6 @@
 """Service that manages reservations in the coworking space."""
 
+from collections import defaultdict
 from fastapi import Depends
 from collections import defaultdict
 from datetime import datetime, timedelta
