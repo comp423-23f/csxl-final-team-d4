@@ -5,6 +5,7 @@ import { AmbassadorPageComponent } from './ambassador-home/ambassador-home.compo
 import { ReservationComponent } from './reservation/reservation.component';
 import { StatisticsComponent } from './statistics/statistics.component';
 
+
 const routes: Routes = [
   CoworkingPageComponent.Route,
   ReservationComponent.Route,
