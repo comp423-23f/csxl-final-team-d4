@@ -56,7 +56,12 @@
       class="search">
       Search
     </button>
-    <button mat-raised-button color="accent" type="button" class="save">
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="saveReport()"
+      type="button"
+      class="save">
       Save
     </button>
     <search-reports>Reports</search-reports>

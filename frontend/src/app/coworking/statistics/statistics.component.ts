@@ -110,7 +110,6 @@ export class StatisticsComponent {
     const labels = Array.from({ length: maxLength }, (_, i) => `Day ${i + 1}`);
     this.lineChartData.labels = labels;
 
-    // Format dates for API endpoint
     const [startYear, startMonth, startDay] = this.formatDateComponents(
       this.startDate
     );
@@ -164,5 +163,24 @@ export class StatisticsComponent {
         this.displayChart = false;
       }
     });
+  }
+  saveReport(): void {
+    const reportName = window.prompt('Please name this report: ');
+    if (reportName) {
+      const requestData = {
+        startDate: this.startDate,
+        endDate: this.endDate,
+        compareStartDate: this.compareStartDate,
+        compareEndDate: this.compareEndDate,
+        reportName: reportName
+      };
+
+      this.http.post('/api/save-report', requestData).subscribe({
+        next: () => window.alert('Report saved successfully.'),
+        error: () => window.alert('Failed to save the report.')
+      });
+    } else if (reportName === '') {
+      window.alert('You must enter a name for the report.');
+    }
   }
 }
