@@ -1,12 +1,8 @@
 import { Component } from '@angular/core';
 import { ChartConfiguration, ChartOptions, ChartType } from 'chart.js';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { ViewChild } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { Route } from '@angular/router';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { HttpClient } from '@angular/common/http';
-import { MatNativeDateModule } from '@angular/material/core';
 import { forkJoin, of } from 'rxjs';
 
 @Component({
@@ -165,6 +161,10 @@ export class StatisticsComponent {
     });
   }
   saveReport(): void {
+    if (!this.startDate || !this.endDate) {
+      window.alert('Start date and end date cannot be empty');
+      return;
+    }
     const reportName = window.prompt('Please name this report: ');
     if (reportName) {
       const requestData = {
@@ -175,7 +175,7 @@ export class StatisticsComponent {
         reportName: reportName
       };
 
-      this.http.post('/api/save-report', requestData).subscribe({
+      this.http.post('/api/coworking/save-report', requestData).subscribe({
         next: () => window.alert('Report saved successfully.'),
         error: () => window.alert('Failed to save the report.')
       });
