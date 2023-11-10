@@ -1,12 +1,9 @@
 import { Component } from '@angular/core';
 import { ChartConfiguration, ChartOptions, ChartType } from 'chart.js';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { ViewChild } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { Route } from '@angular/router';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { HttpClient } from '@angular/common/http';
-import { MatNativeDateModule } from '@angular/material/core';
+import { forkJoin, of } from 'rxjs';
 
 @Component({
   selector: 'app-coworking-statistics',
@@ -77,54 +74,64 @@ export class StatisticsComponent {
   };
   //method after clicking the the search, checks for alert, initilize and show graph
   fetchData(): void {
-    if (this.startDate && this.endDate) {
-      if (this.startDate > this.endDate) {
-        window.alert('Enddate cannot precede startDate');
-      }
-    } else {
-      window.alert('StartDate and endDate cannot be empty');
+    if (!this.startDate || !this.endDate) {
+      window.alert('Start date and end date cannot be empty');
+      return;
     }
+
+    if (this.startDate > this.endDate) {
+      window.alert('End date cannot precede start date');
+      return;
+    }
+
     if (
-      this.compareEndDate &&
       this.compareStartDate &&
+      this.compareEndDate &&
       this.compareStartDate > this.compareEndDate
     ) {
-      window.alert(
-        'Even if the compare is optional, it does not mean you can put end date ahead of startdate :)'
-      );
+      window.alert('Comparison end date cannot precede comparison start date');
+      return;
     }
+
     this.displayChart = false;
     let mainDataRangeLength = this.getDayDifference(
-      this.startDate!,
-      this.endDate!
+      this.startDate,
+      this.endDate
     );
     let compareDataRangeLength =
       this.compareStartDate && this.compareEndDate
-        ? this.getDayDifference(this.compareStartDate!, this.compareEndDate!)
+        ? this.getDayDifference(this.compareStartDate, this.compareEndDate)
         : 0;
     let maxLength = Math.max(mainDataRangeLength, compareDataRangeLength);
-    const labels: string[] = [];
-    for (let i = 1; i <= maxLength; i++) {
-      labels.push(`Day ${i}`);
-    }
+    const labels = Array.from({ length: maxLength }, (_, i) => `Day ${i + 1}`);
     this.lineChartData.labels = labels;
-    let startYear, startMonth, startDay;
-    let endYear, endMonth, endDay;
-    if (this.startDate && this.endDate) {
-      [startYear, startMonth, startDay] = this.formatDateComponents(
-        this.startDate
-      );
-      [endYear, endMonth, endDay] = this.formatDateComponents(this.endDate);
+
+    const [startYear, startMonth, startDay] = this.formatDateComponents(
+      this.startDate
+    );
+    const [endYear, endMonth, endDay] = this.formatDateComponents(this.endDate);
+    const mainEndpoint = `/api/coworking/statistics/get-daily?year_start=${startYear}&month_start=${startMonth}&day_start=${startDay}&year_end=${endYear}&month_end=${endMonth}&day_end=${endDay}`;
+
+    const mainData$ = this.http.get(mainEndpoint);
+    let compareData$: any;
+
+    if (this.compareStartDate && this.compareEndDate) {
+      const [compareStartYear, compareStartMonth, compareStartDay] =
+        this.formatDateComponents(this.compareStartDate);
+      const [compareEndYear, compareEndMonth, compareEndDay] =
+        this.formatDateComponents(this.compareEndDate);
+      const compareEndpoint = `/api/coworking/statistics/get-daily?year_start=${compareStartYear}&month_start=${compareStartMonth}&day_start=${compareStartDay}&year_end=${compareEndYear}&month_end=${compareEndMonth}&day_end=${compareEndDay}`;
+
+      compareData$ = this.http.get(compareEndpoint);
+    } else {
+      compareData$ = of(null);
     }
-    const endpoint = `/api/coworking/statistics/get-daily?year_start=${startYear}&month_start=${startMonth}&day_start=${startDay}&year_end=${endYear}&month_end=${endMonth}&day_end=${endDay}`;
-    let firstdata: any[] = [];
-    let comparedata: any[] = [];
-    this.http.get(endpoint).subscribe({
-      next: (data) => {
-        console.log(data);
-        this.lineChartData.datasets = [
+
+    forkJoin({ mainData: mainData$, compareData: compareData$ }).subscribe({
+      next: (results) => {
+        const datasets = [
           {
-            data: Object.values(data),
+            data: Object.values(results.mainData),
             label: 'Registration',
             fill: false,
             tension: 0.5,
@@ -132,24 +139,48 @@ export class StatisticsComponent {
             backgroundColor: 'rgba(255,0,0,0.3)'
           }
         ];
+
+        if (results.compareData) {
+          datasets.push({
+            data: Object.values(results.compareData),
+            label: 'Comparison',
+            fill: false,
+            tension: 0.5,
+            borderColor: 'blue',
+            backgroundColor: 'rgba(0,0,255,0.3)'
+          });
+        }
+
+        this.lineChartData.datasets = datasets;
+        this.displayChart = true;
       },
       error: (error) => {
         console.error('There was an error fetching the data', error);
+        this.displayChart = false;
       }
     });
-
-    if (this.compareStartDate && this.compareEndDate) {
-      this.lineChartData.datasets.push({
-        data: [0, 15, 8, 18, 9, 10, 25],
-        label: 'Comparison',
-        fill: false,
-        tension: 0.5,
-        borderColor: 'blue',
-        backgroundColor: 'rgba(0,0,255,0.3)'
-      });
+  }
+  saveReport(): void {
+    if (!this.startDate || !this.endDate) {
+      window.alert('Start date and end date cannot be empty');
+      return;
     }
-    setTimeout(() => {
-      this.displayChart = true;
-    }, 450);
+    const reportName = window.prompt('Please name this report: ');
+    if (reportName) {
+      const requestData = {
+        startDate: this.startDate,
+        endDate: this.endDate,
+        compareStartDate: this.compareStartDate,
+        compareEndDate: this.compareEndDate,
+        reportName: reportName
+      };
+
+      this.http.post('/api/coworking/save-report', requestData).subscribe({
+        next: () => window.alert('Report saved successfully.'),
+        error: () => window.alert('Failed to save the report.')
+      });
+    } else if (reportName === '') {
+      window.alert('You must enter a name for the report.');
+    }
   }
 }
