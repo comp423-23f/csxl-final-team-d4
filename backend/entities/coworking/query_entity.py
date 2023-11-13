@@ -4,7 +4,7 @@ from sqlalchemy import Integer, String, DateTime
 from sqlalchemy.orm import Mapped, mapped_column
 from ..entity_base import EntityBase
 from ...models.coworking import Query
-from typing import Self
+from typing import Optional, Self
 from datetime import datetime
 
 
@@ -17,8 +17,8 @@ class QueryEntity(EntityBase):
     name: Mapped[str] = mapped_column(String)
     start_date: Mapped[datetime] = mapped_column(DateTime, index=True)
     end_date: Mapped[datetime] = mapped_column(DateTime, index=True)
-    compare_start_date: Mapped[datetime] = mapped_column(DateTime, index=True)
-    compare_end_date: Mapped[datetime] = mapped_column(DateTime, index=True)
+    compare_start_date: Mapped[Optional[datetime]] = mapped_column(DateTime, index=True)
+    compare_end_date: Mapped[Optional[datetime]] = mapped_column(DateTime, index=True)
 
     def to_model(self) -> Query:
         """Converts the entity to a model.

@@ -13,5 +13,5 @@ class Query(BaseModel):
     name: str = ""
     start_date: datetime
     end_date: datetime
-    compare_start_date: datetime
-    compare_end_date: datetime
+    compare_start_date: datetime | None
+    compare_end_date: datetime | None
