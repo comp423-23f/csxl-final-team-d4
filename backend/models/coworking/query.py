@@ -18,7 +18,7 @@ class Query(BaseModel):
     compare_end_date: datetime | None
 
 
-class Query_(BaseModel):
+class Query_noID(BaseModel):
     """The query history of the XL."""
 
     name: str = ""

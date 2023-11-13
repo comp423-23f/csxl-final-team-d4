@@ -4,7 +4,7 @@ from backend.api.authentication import registered_user, authenticated_pid
 from backend.models.user import User
 from ...database import db_session
 from ...services.coworking.query import QueryService
-from ...models.coworking import Query, Query_
+from ...models.coworking import Query, Query_noID
 
 api = APIRouter(prefix="/api/coworking/queries")
 openapi_tags = {
@@ -23,7 +23,7 @@ def get_all_queries(
 
 @api.post("/save-reports", response_model=Query, tags=["Coworking"])
 def create_query(
-    query_data: Query_,  # Changed from Query to Query_
+    query_data: Query_noID,
     query_svc: QueryService = Depends(QueryService),
     user: User = Depends(authenticated_pid),
 ) -> Query:
