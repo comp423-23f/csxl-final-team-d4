@@ -21,8 +21,6 @@ class QueryEntity(EntityBase):
     compare_end_date: Mapped[Optional[datetime]] = mapped_column(DateTime, index=True)
 
     def to_model(self) -> Query:
-        Returns:
-            Query: The model representation of the entity."""
         return Query(
             id=self.id,
             name=self.name,
