@@ -82,20 +82,14 @@ def get_daily_reservation_counts(
     """Get daily reservation counts with start and end dates specified as year, month, day."""
 
     try:
-        # Constructing the datetime for the start of the day
         start_date = datetime(year=year_start, month=month_start, day=day_start)
-
-        # Constructing the datetime for the end of the day
         end_date = datetime(
             year=year_end, month=month_end, day=day_end, hour=23, minute=59, second=59
         )
         print("Start:", start_date)
 
     except ValueError as exc:
-        # Handle cases where an invalid date is provided
         raise HTTPException(status_code=400, detail=f"Invalid date: {exc}")
-
-    # Fetch the reservation counts using the constructed start and end dates
     counts = reservation_svc.count_reservations_by_date(subject, start_date, end_date)
     print(counts)
 
