@@ -8,7 +8,7 @@ from .time_range import TimeRange
 
 from .operating_hours import OperatingHours
 
-from .query import Query
+from .query import Query, Query_
 
 from .reservation import (
     Reservation,
@@ -40,4 +40,5 @@ __all__ = [
     "SeatAvailability",
     "Status",
     "Query",
+    "Query_",
 ]

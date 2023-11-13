@@ -1,7 +1,8 @@
+from typing import List
 from fastapi import Depends
 from sqlalchemy.orm import Session
 from ...database import db_session
-from ...models.coworking import Query
+from ...models.coworking import Query, Query_
 from ...entities.coworking import QueryEntity
 
 
@@ -9,7 +10,7 @@ class QueryService:
     def __init__(self, session: Session = Depends(db_session)):
         self._session = session
 
-    def get_all(self) -> list[Query]:
+    def get_all(self) -> List[Query]:
         entities = self._session.query(QueryEntity).all()
         return [entity.to_model() for entity in entities]
 

@@ -1,42 +1,43 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 from typing import List
-from backend.api.authentication import registered_user
+from backend.api.authentication import registered_user, authenticated_pid
 from backend.models.user import User
 from ...database import db_session
 from ...services.coworking.query import QueryService
-from ...models.coworking import Query
-
-openapi_tags = {
-    "name": "Coworking",
-    "description": "Methods to handle requests of queries",
-}
+from ...models.coworking import Query, Query_
 
 api = APIRouter(prefix="/api/coworking/queries")
+openapi_tags = {
+    "name": "Coworking",
+    "description": "Methods to deal with query table",
+}
 
 
-@api.get("/get-all-query/", response_model=List[Query], tags=["Coworking"])
+@api.get("/get-all-queries/", response_model=List[Query], tags=["Coworking"])
 def get_all_queries(
-    subject: User = Depends(registered_user),
+    user: User = Depends(authenticated_pid),
     query_svc: QueryService = Depends(QueryService),
 ) -> List[Query]:
     return query_svc.get_all()
 
 
-@api.post("/create-query", response_model=Query, tags=["Coworking"])
+@api.post("/save-reports", response_model=Query, tags=["Coworking"])
 def create_query(
-    query: Query, query_svc: QueryService = Depends(QueryService)
+    query_data: Query_,  # Changed from Query to Query_
+    query_svc: QueryService = Depends(QueryService),
+    user: User = Depends(authenticated_pid),
 ) -> Query:
-    return query_svc.add(query.model_dump())
+    return query_svc.add(query_data.model_dump())
 
 
 @api.delete("/delete-query/{query_id}", response_model=bool, tags=["Coworking"])
 def delete_query(
-    query_id: int, query_svc: QueryService = Depends(QueryService)
+    query_id: int,
+    query_svc: QueryService = Depends(QueryService),
+    user: User = Depends(authenticated_pid),
 ) -> bool:
-    deleted_query = query_svc.delete(query_id)
-    if not deleted_query:
+    if not query_svc.delete(query_id):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Query not found"
         )
-    return deleted_query
+    return True

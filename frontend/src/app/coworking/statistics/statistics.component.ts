@@ -166,19 +166,26 @@ export class StatisticsComponent {
       return;
     }
     const reportName = window.prompt('Please name this report: ');
+    const flag_1 = this.compareStartDate?.toISOString();
+    const flag_2 = this.compareEndDate?.toISOString();
+    let flag = true;
+    if (flag_1 == undefined || flag_2 == undefined) {
+      flag = false;
+    }
     if (reportName) {
       const requestData = {
-        startDate: this.startDate,
-        endDate: this.endDate,
-        compareStartDate: this.compareStartDate,
-        compareEndDate: this.compareEndDate,
-        reportName: reportName
+        name: reportName,
+        start_date: this.startDate.toISOString(),
+        end_date: this.endDate.toISOString(),
+        compare_start_date: flag ? flag_1 : null,
+        compare_end_date: flag ? flag_2 : null
       };
-
-      this.http.post('/api/coworking/save-report', requestData).subscribe({
-        next: () => window.alert('Report saved successfully.'),
-        error: () => window.alert('Failed to save the report.')
-      });
+      this.http
+        .post('/api/coworking/queries/save-reports', requestData)
+        .subscribe({
+          next: () => window.alert('Report saved successfully.'),
+          error: () => window.alert('Failed to save the report.')
+        });
     } else if (reportName === '') {
       window.alert('You must enter a name for the report.');
     }
