@@ -1,0 +1,1 @@
+SELECT * FROM "coworking__query" LIMIT 1000;
