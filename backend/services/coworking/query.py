@@ -21,8 +21,8 @@ class QueryService:
         self._session.refresh(new_query)
         return new_query.to_model()
 
-    def delete(self, query_id: int) -> bool:
-        query = self._session.query(QueryEntity).filter_by(id=query_id).first()
+    def delete(self, query_name: str) -> bool:
+        query = self._session.query(QueryEntity).filter_by(name=query_name).first()
         if query:
             self._session.delete(query)
             self._session.commit()

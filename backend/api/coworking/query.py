@@ -30,13 +30,13 @@ def create_query(
     return query_svc.add(query_data.model_dump())
 
 
-@api.delete("/delete-query/{query_id}", response_model=bool, tags=["Coworking"])
+@api.delete("/delete-query/{query_name}", response_model=bool, tags=["Coworking"])
 def delete_query(
-    query_id: int,
+    query_name: str,
     query_svc: QueryService = Depends(QueryService),
     user: User = Depends(authenticated_pid),
 ) -> bool:
-    if not query_svc.delete(query_id):
+    if not query_svc.delete(query_name):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Query not found"
         )
