@@ -1,6 +1,5 @@
 """Models for statistic query history."""
 
-
 from pydantic import BaseModel, root_validator
 from .time_range import TimeRange
 from datetime import datetime
@@ -9,7 +8,6 @@ from typing import Dict, Any
 
 class Query(BaseModel):
     """The query history of the XL."""
-
     id: int
     name: str = ""
     start_date: datetime
@@ -19,8 +17,6 @@ class Query(BaseModel):
 
 
 class Query_noID(BaseModel):
-    """The query history of the XL."""
-
     name: str = ""
     start_date: datetime
     end_date: datetime

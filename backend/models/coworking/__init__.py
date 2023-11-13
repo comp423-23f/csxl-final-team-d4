@@ -8,8 +8,8 @@ from .time_range import TimeRange
 
 from .operating_hours import OperatingHours
 
-from .query import Query, Query_noID
 
+from .query import Query, Query_noID
 from .reservation import (
     Reservation,
     ReservationRequest,
