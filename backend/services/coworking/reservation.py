@@ -711,7 +711,9 @@ class ReservationService:
             .filter(
                 ReservationEntity.start >= start_date,
                 ReservationEntity.start < end_date,
-                ReservationEntity.state.not_in([ReservationState.CANCELLED]),
+                ReservationEntity.state.not_in(
+                    [ReservationState.CANCELLED] and [ReservationState.DRAFT]
+                ),
             )
             .group_by("date")
             .all()
