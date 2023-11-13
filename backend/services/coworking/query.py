@@ -2,7 +2,7 @@ from typing import List
 from fastapi import Depends
 from sqlalchemy.orm import Session
 from ...database import db_session
-from ...models.coworking import Query, Query_noID
+from ...models.coworking import Query
 from ...entities.coworking import QueryEntity
 
 
