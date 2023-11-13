@@ -13,7 +13,7 @@ from .api import (
     authentication,
     user,
 )
-from .api.coworking import status, reservation, ambassador
+from .api.coworking import status, reservation, ambassador, query
 from .api.admin import users as admin_users
 from .api.admin import roles as admin_roles
 from .services.exceptions import UserPermissionException, ResourceNotFoundException
@@ -38,6 +38,7 @@ app = FastAPI(
         events.openapi_tags,
         reservation.openapi_tags,
         reservation.openapi_tags,
+        query.openapi_tags,
         health.openapi_tags,
         admin_users.openapi_tags,
         admin_roles.openapi_tags,
@@ -48,6 +49,7 @@ app = FastAPI(
 feature_apis = [
     status,
     reservation,
+    query,
     events,
     user,
     profile,

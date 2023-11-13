@@ -3,7 +3,7 @@
 from sqlalchemy import Integer, String, DateTime
 from sqlalchemy.orm import Mapped, mapped_column
 from ..entity_base import EntityBase
-from ...models.coworking import Query
+from ...models.coworking import Query  # type: ignore
 from typing import Optional, Self
 from datetime import datetime
 
@@ -21,8 +21,6 @@ class QueryEntity(EntityBase):
     compare_end_date: Mapped[Optional[datetime]] = mapped_column(DateTime, index=True)
 
     def to_model(self) -> Query:
-        """Converts the entity to a model.
-
         Returns:
             Query: The model representation of the entity."""
         return Query(
@@ -36,13 +34,6 @@ class QueryEntity(EntityBase):
 
     @classmethod
     def from_model(cls, model: Query) -> Self:
-        """Create an QueryEntity from a Query model.
-
-        Args:
-            model (Query): The model to create the entity from.
-
-        Returns:
-            Self: The entity (not yet persisted)."""
         return cls(
             id=model.id,
             name=model.name,
