@@ -18,7 +18,10 @@ def get_all_queries(
     user: User = Depends(authenticated_pid),
     query_svc: QueryService = Depends(QueryService),
 ) -> List[Query]:
-    return query_svc.get_all()
+    try:
+        return query_svc.get_all()
+    except HTTPException as e:
+        raise HTTPException(status_code=e.status_code, detail=e.detail)
 
 
 @api.post("/save-reports", response_model=Query, tags=["Coworking"])
@@ -49,4 +52,7 @@ def update_query_share(
     query_svc: QueryService = Depends(QueryService),
     user: User = Depends(authenticated_pid),
 ) -> bool:
-    return query_svc.update_share(query_name)
+    try:
+        return query_svc.update_share(query_name)
+    except HTTPException as e:
+        raise HTTPException(status_code=e.status_code, detail=e.detail)

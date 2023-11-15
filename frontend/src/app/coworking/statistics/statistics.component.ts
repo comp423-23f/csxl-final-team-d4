@@ -184,7 +184,7 @@ export class StatisticsComponent {
         .post('/api/coworking/queries/save-reports', requestData)
         .subscribe({
           next: () => window.alert('Report saved successfully.'),
-          error: () => window.alert('Failed to save the report.')
+          error: (error) => window.alert(error.error.detail)
         });
     } else if (reportName === '') {
       window.alert('You must enter a name for the report.');

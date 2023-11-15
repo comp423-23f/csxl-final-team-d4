@@ -26,7 +26,7 @@ export class SearchReports {
             window.alert('Undo successfully');
           }
         },
-        error: () => window.alert('Failed!')
+        error: (error) => window.alert(error.error.detail)
       });
   }
 }

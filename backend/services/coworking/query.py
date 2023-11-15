@@ -15,6 +15,13 @@ class QueryService:
         return [entity.to_model() for entity in entities]
 
     def add(self, query_data: dict) -> Query:
+        existing_query = (
+            self._session.query(QueryEntity).filter_by(name=query_data["name"]).first()
+        )
+        if existing_query:
+            raise HTTPException(
+                status_code=400, detail="A saved report with this name already exists"
+            )
         new_query = QueryEntity(**query_data)
         self._session.add(new_query)
         self._session.commit()
