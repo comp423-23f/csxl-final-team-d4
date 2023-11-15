@@ -23,7 +23,7 @@ export class SearchReports {
           if (response) {
             window.alert('Shared successfully');
           } else {
-            window.alert('Undo successfully');
+            window.alert('Undo Share successfully');
           }
         },
         error: (error) => window.alert(error.error.detail)
