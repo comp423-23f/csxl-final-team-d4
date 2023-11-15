@@ -190,14 +190,14 @@ export class StatisticsComponent {
       window.alert('You must enter a name for the report.');
     }
   }
-  shareReport(): void {
-    const requestData = {
-      name: '',
-      share: true
-    };
-    this.http.post('/api/coworking/queries/share', requestData).subscribe({
-      next: () => window.alert('Shared!'),
-      error: (e) => window.alert('FAILED')
-    });
-  }
+  // shareReport(): void {
+  //   const requestData = {
+  //     name: '',
+  //     share: true
+  //   };
+  //   this.http.post('/api/coworking/queries/share', requestData).subscribe({
+  //     next: () => window.alert('Shared!'),
+  //     error: (e) => window.alert('FAILED')
+  //   });
+  // }
 }
