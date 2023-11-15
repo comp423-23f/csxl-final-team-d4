@@ -41,3 +41,12 @@ def delete_query(
             status_code=status.HTTP_404_NOT_FOUND, detail="Query not found"
         )
     return True
+
+
+@api.get("/update-share/{query_name}", response_model=bool, tags=["Coworking"])
+def update_query_share(
+    query_name: str,
+    query_svc: QueryService = Depends(QueryService),
+    user: User = Depends(authenticated_pid),
+) -> bool:
+    return query_svc.update_share(query_name)

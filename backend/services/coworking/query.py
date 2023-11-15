@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 from ...database import db_session
 from ...models.coworking import Query
@@ -28,3 +28,11 @@ class QueryService:
             self._session.commit()
             return True
         return False
+
+    def update_share(self, query_name: str) -> bool:
+        query = self._session.query(QueryEntity).filter_by(name=query_name).first()
+        if query:
+            query.share = not query.share
+            self._session.commit()
+            return query.share
+        raise HTTPException(status_code=404, detail="Query not found")
