@@ -8,7 +8,11 @@
     </mat-expansion-panel-header>
     <p class="custom-panel-content">
       Report #1
-      <button mat-raised-button color="accent" class="custom-panel-button">
+      <button
+        mat-raised-button
+        color="accent"
+        (click)="updateShare()"
+        class="custom-panel-button">
         Share
       </button>
     </p>
