@@ -13,12 +13,13 @@ openapi_tags = {
 }
 
 
-@api.get("/get-all-queries/", response_model=List[Query], tags=["Coworking"])
+@api.get("/get-all-queries", response_model=List[Query], tags=["Coworking"])
 def get_all_queries(
     user: User = Depends(authenticated_pid),
     query_svc: QueryService = Depends(QueryService),
 ) -> List[Query]:
     try:
+        print("frontend api called")
         return query_svc.get_all()
     except HTTPException as e:
         raise HTTPException(status_code=e.status_code, detail=e.detail)

@@ -11,6 +11,7 @@ class QueryService:
         self._session = session
 
     def get_all(self) -> List[Query]:
+        print("backend service method called")
         entities = self._session.query(QueryEntity).all()
         return [entity.to_model() for entity in entities]
 
