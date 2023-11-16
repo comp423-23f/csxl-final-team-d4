@@ -6,7 +6,6 @@
         Saved search queries
       </mat-panel-description>
     </mat-expansion-panel-header>
-
     <div
       *ngFor="let report of queries; let i = index"
       class="custom-panel-content">
@@ -15,6 +14,7 @@
         mat-raised-button
         color="accent"
         (click)="updateShare(report)"
+
         class="custom-panel-button">
         Share
       </button>

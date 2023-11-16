@@ -1,3 +1,4 @@
+
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
@@ -10,7 +11,6 @@ interface Query {
   compare_end_date?: Date;
   share: boolean;
 }
-
 @Component({
   selector: 'search-reports',
   templateUrl: './search-reports.widget.html',

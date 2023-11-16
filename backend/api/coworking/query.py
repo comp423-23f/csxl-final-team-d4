@@ -19,7 +19,6 @@ def get_all_queries(
     query_svc: QueryService = Depends(QueryService),
 ) -> List[Query]:
     try:
-        print("frontend api called")
         return query_svc.get_all()
     except HTTPException as e:
         raise HTTPException(status_code=e.status_code, detail=e.detail)

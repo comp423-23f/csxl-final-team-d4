@@ -212,10 +212,12 @@ export class StatisticsComponent implements OnInit {
       this.http
         .post<Query>('/api/coworking/queries/save-reports', requestData)
         .subscribe({
+
           next: (response) => {
             window.alert('Report saved successfully.');
             this.queries.push(response);
           },
+
           error: (error) => window.alert(error.error.detail)
         });
     } else if (reportName === '') {
