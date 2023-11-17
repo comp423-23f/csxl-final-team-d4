@@ -13,7 +13,7 @@ openapi_tags = {
 }
 
 
-@api.get("/get-all-queries/", response_model=List[Query], tags=["Coworking"])
+@api.get("/get-all-queries", response_model=List[Query], tags=["Coworking"])
 def get_all_queries(
     user: User = Depends(authenticated_pid),
     query_svc: QueryService = Depends(QueryService),

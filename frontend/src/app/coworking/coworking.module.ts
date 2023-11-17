@@ -22,8 +22,9 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { Form, FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { SearchReports } from './widgets/search-reports/search-reports.widget';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
+import { SearchReports } from './widgets/search-reports/search-reports.widget';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     CoworkingReservationCard,
     CoworkingHoursCard,
     StatisticsComponent,
-    StatsTable
+    StatsTable,
+    SearchReports
   ],
   imports: [
     CommonModule,
@@ -53,7 +55,6 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MatFormFieldModule,
     MatInputModule,
     MatExpansionModule,
-    SearchReports,
     MatSlideToggleModule
   ],
   providers: [{ provide: NgChartsConfiguration }]
