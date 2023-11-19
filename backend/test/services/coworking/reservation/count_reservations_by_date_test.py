@@ -45,8 +45,12 @@ def test_count_reservations_by_date(reservation_svc: ReservationService):
     non_cancelled_reservations = [
         reservation
         for reservation in reservation_data.reservations
-        if reservation.state != ReservationState.CANCELLED
+        if (
+            ReservationState.CANCELLED not in reservation.state
+            and reservation.start >= datetime(2023, 10, 29)
+            and reservation.end < datetime(2023, 11, 15) + timedelta(days=1)
+        )
     ]
-    # Assert that the method returns the correct count
 
+    # Assert that the method returns the correct count
     assert count == len(non_cancelled_reservations)
