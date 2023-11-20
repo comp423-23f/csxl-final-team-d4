@@ -712,7 +712,7 @@ class ReservationService:
                 ReservationEntity.start >= start_date,
                 ReservationEntity.start < end_date,
                 ReservationEntity.state.not_in(
-                    [ReservationState.CANCELLED] and [ReservationState.DRAFT]
+                    [ReservationState.CANCELLED, ReservationState.DRAFT]
                 ),
             )
             .group_by("date")
