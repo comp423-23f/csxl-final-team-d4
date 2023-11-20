@@ -698,27 +698,6 @@ class ReservationService:
 
         return [reservation.to_model() for reservation in reservations]
 
-    def count_reservations(
-        self, subject: User, startDate: datetime, endDate: datetime
-    ) -> int:
-        """View all the reservations in the given time range.
-
-        This method queries all past events from the start date to end date.
-
-        Args:
-            subject (User): The user initiating the reservation change request.
-            startDate (Date): The start date we want to query.
-            endDate (Date): The end date of query.
-
-        Returns:
-            int - count of all the reservations in the given time frame.
-        """
-        time_range = TimeRange(
-            start=startDate,
-            end=endDate,
-        )
-        return len(self._get_active_reservations(time_range))
-
     def count_reservations_by_date(
         self, subject: User, start_date: datetime, end_date: datetime
     ) -> dict:
@@ -731,8 +710,10 @@ class ReservationService:
             )
             .filter(
                 ReservationEntity.start >= start_date,
-                ReservationEntity.start < end_date + timedelta(days=1),
-                ReservationEntity.state.not_in([ReservationState.CANCELLED]),
+                ReservationEntity.start < end_date,
+                ReservationEntity.state.not_in(
+                    [ReservationState.CANCELLED] and [ReservationState.DRAFT]
+                ),
             )
             .group_by("date")
             .all()

@@ -2,27 +2,23 @@
   <mat-expansion-panel class="custom-expansion-panel">
     <mat-expansion-panel-header class="custom-expansion-panel-header">
       <mat-panel-title class="custom-panel-title">Reports</mat-panel-title>
-      <mat-panel-description class="custom-panel-description"
-        >Saved search queries
+      <mat-panel-description class="custom-panel-description">
+        Saved search queries
       </mat-panel-description>
     </mat-expansion-panel-header>
-    <p class="custom-panel-content">
-      Report #1
-      <button mat-raised-button color="accent" class="custom-panel-button">
+    <div
+      *ngFor="let report of queries; let i = index"
+      class="custom-panel-content">
+      {{ report.name }}
+      <button
+        mat-raised-button
+        color="accent"
+        (click)="updateShare(report)"
+
+        class="custom-panel-button">
         Share
       </button>
-    </p>
+      <mat-divider *ngIf="i < queries.length - 1"></mat-divider>
+    </div>
   </mat-expansion-panel>
 </mat-accordion>
-
-<!-- <mat-expansion-panel
-    (opened)="panelOpenState = true"
-    (closed)="panelOpenState = false">
-    <mat-expansion-panel-header>
-      <mat-panel-title> Self aware panel </mat-panel-title>
-      <mat-panel-description>
-        Currently I am {{ panelOpenState ? 'open' : 'closed' }}
-      </mat-panel-description>
-    </mat-expansion-panel-header>
-    <p>I'm visible because I am open</p>
-  </mat-expansion-panel> -->
