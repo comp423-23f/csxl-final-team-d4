@@ -36,21 +36,52 @@ from . import reservation_data
 
 
 def test_count_reservations_by_date(reservation_svc: ReservationService):
-    """Expected case of this service method."""
-    count: int = sum(
-        reservation_svc.count_reservations_by_date(
-            user_data.ambassador, datetime(2023, 10, 29), datetime(2023, 11, 15)
-        ).values()
+    """Revised test to cover individual dates and edge cases."""
+    start_date = datetime(2023, 10, 29)
+    end_date = datetime(2023, 11, 30)
+
+    # Call the method under test
+    reservation_count_by_date = reservation_svc.count_reservations_by_date(
+        user_data.ambassador, start_date, end_date
     )
+    # Check the count for each date in the range
+    for single_date in (
+        start_date + timedelta(days=n) for n in range((end_date - start_date).days + 1)
+    ):
+        expected_count = len(
+            [
+                reservation
+                for reservation in reservation_data.reservations
+                if (
+                    reservation.start.date() == single_date.date()
+                    and ReservationState.CANCELLED not in reservation.state
+                    and ReservationState.DRAFT not in reservation.state
+                )
+            ]
+        )
+        assert (
+            reservation_count_by_date[single_date.date()] == expected_count
+        ), f"Mismatch on date: {single_date.date()}"
+
+    # Verify total count
+    total_count = sum(reservation_count_by_date.values())
     non_cancelled_reservations = [
         reservation
         for reservation in reservation_data.reservations
         if (
             ReservationState.CANCELLED not in reservation.state
-            and reservation.start >= datetime(2023, 10, 29)
-            and reservation.end < datetime(2023, 11, 15) + timedelta(days=1)
+            and ReservationState.DRAFT not in reservation.state
+            and reservation.start >= start_date
+            and reservation.end < end_date + timedelta(days=1)
         )
     ]
+    assert total_count == len(non_cancelled_reservations), "Total count mismatch"
 
-    # Assert that the method returns the correct count
-    assert count == len(non_cancelled_reservations)
+    # Verify that there are no counts for dates outside the range
+    for date_outside_range in [
+        start_date - timedelta(days=1),
+        end_date + timedelta(days=1),
+    ]:
+        assert (
+            date_outside_range.date() not in reservation_count_by_date
+        ), f"Unexpected count for date outside range: {date_outside_range.date()}"
