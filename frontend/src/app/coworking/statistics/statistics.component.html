@@ -1,3 +1,8 @@
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.4.0/remixicon.css"
+  crossorigin="" />
+
 <div style="display: flex; align-items: center">
   <mat-form-field appearance="fill">
     <mat-label>Start Date</mat-label>
@@ -77,17 +82,17 @@
           *ngFor="let report of queries; let i = index"
           class="custom-panel-content">
           <div (click)="selectReportAndFetchData(report)" class="report-line">
-            <span class="report-name">{{ report.name }}</span
+            <span class="report-name"> Name: {{ report.name }}</span
             >,
             <span class="report-range"
-              >range: {{ report.start_date | date: 'yyyy-MM-dd' }} to
-              {{ report.end_date | date: 'yyyy-MM-dd' }}</span
+              >Range: {{ report.start_date | date: 'MM/dd/yy' }} to
+              {{ report.end_date | date: 'MM/dd/yy' }}</span
             >
             <ng-container *ngIf="report.compare_start_date">
               <span class="report-compare"
-                >, compare:
-                {{ report.compare_start_date | date: 'yyyy-MM-dd' }} to
-                {{ report.compare_end_date | date: 'yyyy-MM-dd' }}</span
+                >, Compare:
+                {{ report.compare_start_date | date: 'MM/dd/yy' }} to
+                {{ report.compare_end_date | date: 'MM/dd/yy' }}</span
               >
             </ng-container>
           </div>
@@ -97,14 +102,19 @@
             class="custom-panel-button"
             [color]="getColor(report)"
             [ngClass]="report.share ? 'undo-button' : 'share-button'">
-            {{ report.share ? 'Undo' : 'Share' }}
+            <ng-container *ngIf="report.share; else notShared">
+              <i class="ri-arrow-go-back-line"></i>
+            </ng-container>
+            <ng-template #notShared>
+              <i class="ri-share-box-line"></i>
+            </ng-template>
           </button>
           <button
             mat-raised-button
             color="warn"
             (click)="deleteQuery(report)"
             class="delete-button">
-            Delete
+            <i class="ri-close-line"></i>
           </button>
           <mat-divider *ngIf="i < queries.length - 1"></mat-divider>
         </div>
