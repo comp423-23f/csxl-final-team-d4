@@ -12,6 +12,7 @@ from ....services.coworking import (
     PolicyService,
     StatusService,
 )
+from ....services.coworking.query import QueryService
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
@@ -71,3 +72,9 @@ def status_svc():
     return StatusService(
         policies_mock, operating_hours_mock, seat_mock, reservation_mock
     )
+
+
+@pytest.fixture()
+def query_svc(session: Session):
+    """QueryService fixture."""
+    return QueryService(session)

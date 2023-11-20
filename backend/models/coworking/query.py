@@ -6,10 +6,15 @@ from datetime import datetime
 from typing import Dict, Any
 
 
-class Query(BaseModel):
-    """The query history of the XL."""
+class QueryIdentity(BaseModel):
+    """The identity of the query."""
 
     id: int
+
+
+class Query(QueryIdentity):
+    """The query history of the XL."""
+
     name: str = ""
     start_date: datetime
     end_date: datetime
