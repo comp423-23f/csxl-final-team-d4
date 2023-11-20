@@ -3,6 +3,12 @@
 }
 
 .viewStats{
-    margin-left: 15px;
+    margin-left: 420px;
+    font-size: 18px;
+    text-decoration: underline;
+    height: 70px;
+    width: 240px;
+    display: flex;
+    align-items: center;
 
 }
