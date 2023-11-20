@@ -1,27 +1,43 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ChartConfiguration, ChartOptions, ChartType } from 'chart.js';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { Route } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin, of } from 'rxjs';
 
+interface Query {
+  id: number;
+  name: string;
+  start_date: Date;
+  end_date: Date;
+  compare_start_date?: Date;
+  compare_end_date?: Date;
+  share: boolean;
+}
+
 @Component({
   selector: 'app-coworking-statistics',
   templateUrl: './statistics.component.html',
   styleUrls: ['./statistics.component.css']
 })
-export class StatisticsComponent {
+export class StatisticsComponent implements OnInit {
   public static Route: Route = {
     path: 'statistics',
     component: StatisticsComponent,
     title: 'Registration Statistics'
   };
-
+  panelOpenState = false;
+  queries: Query[] = [];
   public displayChart = false;
   startDate!: Date | null;
   endDate!: Date | null;
   compareStartDate!: Date | null;
   compareEndDate!: Date | null;
+  constructor(private http: HttpClient) {}
+
+  ngOnInit(): void {
+    this.retrieveQueries();
+  }
 
   title = 'Registration statistics';
   public lineChartLabels: string[] = [];
@@ -47,7 +63,6 @@ export class StatisticsComponent {
     return true;
   };
 
-  constructor(private http: HttpClient) {}
   private formatDateComponents(date: Date): [number, number, number] {
     const year = date.getFullYear();
     const month = date.getMonth() + 1; // JavaScript months are 0-indexed
@@ -166,21 +181,134 @@ export class StatisticsComponent {
       return;
     }
     const reportName = window.prompt('Please name this report: ');
-    if (reportName) {
-      const requestData = {
-        startDate: this.startDate,
-        endDate: this.endDate,
-        compareStartDate: this.compareStartDate,
-        compareEndDate: this.compareEndDate,
-        reportName: reportName
+    if (reportName && reportName.trim() !== '') {
+      // Helper function to subtract hours from a date
+      const subtractHours = (date: Date, hours: number): Date => {
+        return new Date(date.getTime() - hours * 60 * 60 * 1000);
       };
 
-      this.http.post('/api/coworking/save-report', requestData).subscribe({
-        next: () => window.alert('Report saved successfully.'),
-        error: () => window.alert('Failed to save the report.')
-      });
+      const requestData = {
+        name: reportName.trim(),
+        start_date: subtractHours(this.startDate, 5).toISOString(),
+        end_date: subtractHours(this.endDate, 5).toISOString(),
+        compare_start_date: this.compareStartDate
+          ? subtractHours(this.compareStartDate, 5).toISOString()
+          : null,
+        compare_end_date: this.compareEndDate
+          ? subtractHours(this.compareEndDate, 5).toISOString()
+          : null
+      };
+      if (requestData.start_date == null || requestData.end_date == null) {
+        window.alert('Start Date or End Date cannot be empty!');
+        return;
+      }
+      if (
+        requestData.compare_end_date == null ||
+        requestData.compare_start_date == null
+      ) {
+        requestData.compare_end_date = null;
+        requestData.compare_start_date = null;
+      }
+      this.http
+        .post<Query>('/api/coworking/queries/save-reports', requestData)
+        .subscribe({
+
+          next: (response) => {
+            window.alert('Report saved successfully.');
+            this.queries.push(response);
+          },
+
+          error: (error) => window.alert(error.error.detail)
+        });
     } else if (reportName === '') {
       window.alert('You must enter a name for the report.');
     }
+  }
+  //..............for the adding widget
+  retrieveQueries(): void {
+    this.http.get<Query[]>('/api/coworking/queries/get-all-queries').subscribe({
+      next: (response) => {
+        this.queries = response.map((query) => ({
+          ...query,
+          start_date: new Date(query.start_date),
+          end_date: new Date(query.end_date),
+          compare_start_date: query.compare_start_date
+            ? new Date(query.compare_start_date)
+            : undefined,
+          compare_end_date: query.compare_end_date
+            ? new Date(query.compare_end_date)
+            : undefined
+        }));
+      },
+      error: (error) => console.error('Error retrieving queries:', error)
+    });
+  }
+
+  updateShare(query: Query): void {
+    query.share = !query.share; // Toggle the share state optimistically
+    const endpoint = query.share ? 'update-share' : 'undo-share';
+    this.http
+      .get(`/api/coworking/queries/update-share/${query.name}`)
+      .subscribe({
+        next: (flag) => {
+          if (flag) {
+            window.alert('Shared successfully');
+          } else {
+            window.alert('Undo Share successfully');
+          }
+        },
+        error: (error) => {
+          console.error('Error updating share status:', error);
+          query.share = !query.share; // Revert the share state on error
+          window.alert(error.error.detail);
+        }
+      });
+  }
+
+  formatDates(query: Query): string {
+    const startDate = query.start_date.toLocaleDateString();
+    const endDate = query.end_date.toLocaleDateString();
+    let compareDates = '';
+    if (query.compare_start_date && query.compare_end_date) {
+      const compareStartDate = query.compare_start_date.toLocaleDateString();
+      const compareEndDate = query.compare_end_date.toLocaleDateString();
+      compareDates = `, compare: ${compareStartDate} to ${compareEndDate}`;
+    }
+    return `${query.name}, original: ${startDate} to ${endDate}${compareDates}`;
+  }
+
+  selectReportAndFetchData(report: Query): void {
+    // Set the dates based on the selected report
+    this.startDate = new Date(report.start_date);
+    this.endDate = new Date(report.end_date);
+
+    // Handle nullable compare dates
+    this.compareStartDate = report.compare_start_date
+      ? new Date(report.compare_start_date)
+      : null;
+    this.compareEndDate = report.compare_end_date
+      ? new Date(report.compare_end_date)
+      : null;
+
+    // Fetch the data as if the search button was clicked
+    this.fetchData();
+  }
+  deleteQuery(query: Query): void {
+    this.http
+      .delete(`/api/coworking/queries/delete-query/${query.name}`)
+      .subscribe({
+        next: () => {
+          this.queries = this.queries.filter((q) => q.id !== query.id);
+          window.alert('Query deleted successfully');
+        },
+        error: (error) => {
+          console.error('Error deleting query:', error);
+          window.alert('Error deleting query');
+        }
+      });
+  }
+
+  getColor(report: Query): string {
+    return report.share ? 'primary' : 'accent';
   }
 }

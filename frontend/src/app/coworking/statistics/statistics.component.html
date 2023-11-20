@@ -64,7 +64,52 @@
       class="save">
       Save
     </button>
-    <search-reports>Reports</search-reports>
+    <mat-accordion class="custom-accordion">
+      <mat-expansion-panel class="custom-expansion-panel">
+        <mat-expansion-panel-header class="custom-expansion-panel-header">
+          <mat-panel-title class="custom-panel-title">Reports</mat-panel-title>
+          <mat-panel-description class="custom-panel-description">
+            Click a report to view its statistics
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <div
+          *ngFor="let report of queries; let i = index"
+          class="custom-panel-content">
+          <div (click)="selectReportAndFetchData(report)" class="report-line">
+            <span class="report-name">{{ report.name }}</span
+            >,
+            <span class="report-range"
+              >range: {{ report.start_date | date: 'yyyy-MM-dd' }} to
+              {{ report.end_date | date: 'yyyy-MM-dd' }}</span
+            >
+            <ng-container *ngIf="report.compare_start_date">
+              <span class="report-compare"
+                >, compare:
+                {{ report.compare_start_date | date: 'yyyy-MM-dd' }} to
+                {{ report.compare_end_date | date: 'yyyy-MM-dd' }}</span
+              >
+            </ng-container>
+          </div>
+          <button
+            mat-raised-button
+            (click)="updateShare(report)"
+            class="custom-panel-button"
+            [color]="getColor(report)"
+            [ngClass]="report.share ? 'undo-button' : 'share-button'">
+            {{ report.share ? 'Undo' : 'Share' }}
+          </button>
+          <button
+            mat-raised-button
+            color="warn"
+            (click)="deleteQuery(report)"
+            class="delete-button">
+            Delete
+          </button>
+          <mat-divider *ngIf="i < queries.length - 1"></mat-divider>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
   </div>
 </div>
 
