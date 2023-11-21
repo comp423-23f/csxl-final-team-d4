@@ -1,0 +1,37 @@
+<div>
+  <h2>Shared Statistics</h2>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Select a Query</mat-label>
+    <mat-select
+      [(value)]="selectedQuery"
+      (selectionChange)="selectQueryAndFetchData(selectedQuery)">
+      <mat-option *ngFor="let query of sharedQueries" [value]="query">
+        {{ query.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div *ngIf="selectedQuery" class="query-details">
+    <span>Selected Query: {{ selectedQuery.name }}</span
+    >,
+    <span
+      >Range: {{ selectedQuery.start_date | date: 'mediumDate' }} to
+      {{ selectedQuery.end_date | date: 'mediumDate' }}</span
+    >
+    <ng-container *ngIf="selectedQuery.compare_start_date">
+      , Compare: {{ selectedQuery.compare_start_date | date: 'mediumDate' }} to
+      {{ selectedQuery.compare_end_date | date: 'mediumDate' }}
+    </ng-container>
+  </div>
+</div>
+
+<div *ngIf="displayChart" class="chart-container">
+  <canvas
+    baseChart
+    [type]="'line'"
+    [data]="lineChartData"
+    [options]="lineChartOptions"
+    [legend]="lineChartLegend">
+  </canvas>
+</div>

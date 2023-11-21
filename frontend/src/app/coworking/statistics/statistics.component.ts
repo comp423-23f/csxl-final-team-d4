@@ -4,16 +4,7 @@ import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { Route } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin, of } from 'rxjs';
-
-interface Query {
-  id: number;
-  name: string;
-  start_date: Date;
-  end_date: Date;
-  compare_start_date?: Date;
-  compare_end_date?: Date;
-  share: boolean;
-}
+import { Query } from '../coworking.models';
 
 @Component({
   selector: 'app-coworking-statistics',
@@ -212,7 +203,6 @@ export class StatisticsComponent implements OnInit {
       this.http
         .post<Query>('/api/coworking/queries/save-reports', requestData)
         .subscribe({
-
           next: (response) => {
             window.alert('Report saved successfully.');
             this.queries.push(response);

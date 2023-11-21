@@ -56,3 +56,14 @@ def update_query_share(
         return query_svc.update_share(query_name)
     except HTTPException as e:
         raise HTTPException(status_code=e.status_code, detail=e.detail)
+
+
+@api.get("/get-shared-queries", response_model=List[Query], tags=["Coworking"])
+def get_shared_queries(
+    user: User = Depends(authenticated_pid),
+    query_svc: QueryService = Depends(QueryService),
+) -> List[Query]:
+    try:
+        return query_svc.get_shared()
+    except HTTPException as e:
+        raise HTTPException(status_code=e.status_code, detail=e.detail)
