@@ -6,9 +6,9 @@ from ...database import db_session
 from ...services.coworking.query import QueryService
 from ...models.coworking import Query, Query_noID
 
-api = APIRouter(prefix="/api/coworking/queries")
+api = APIRouter(prefix="/api/admin/queries")
 openapi_tags = {
-    "name": "Coworking",
+    "name": "Query",
     "description": "Methods to deal with query table",
 }
 

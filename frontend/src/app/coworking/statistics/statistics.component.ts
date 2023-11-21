@@ -201,7 +201,7 @@ export class StatisticsComponent implements OnInit {
         requestData.compare_start_date = null;
       }
       this.http
-        .post<Query>('/api/coworking/queries/save-reports', requestData)
+        .post<Query>('/api/admin/queries/save-reports', requestData)
         .subscribe({
           next: (response) => {
             window.alert('Report saved successfully.');
@@ -216,7 +216,7 @@ export class StatisticsComponent implements OnInit {
   }
   //..............for the adding widget
   retrieveQueries(): void {
-    this.http.get<Query[]>('/api/coworking/queries/get-all-queries').subscribe({
+    this.http.get<Query[]>('/api/admin/queries/get-all-queries').subscribe({
       next: (response) => {
         this.queries = response.map((query) => ({
           ...query,
@@ -237,22 +237,20 @@ export class StatisticsComponent implements OnInit {
   updateShare(query: Query): void {
     query.share = !query.share; // Toggle the share state optimistically
     const endpoint = query.share ? 'update-share' : 'undo-share';
-    this.http
-      .get(`/api/coworking/queries/update-share/${query.name}`)
-      .subscribe({
-        next: (flag) => {
-          if (flag) {
-            window.alert('Shared successfully');
-          } else {
-            window.alert('Undo Share successfully');
-          }
-        },
-        error: (error) => {
-          console.error('Error updating share status:', error);
-          query.share = !query.share; // Revert the share state on error
-          window.alert(error.error.detail);
+    this.http.get(`/api/admin/queries/update-share/${query.name}`).subscribe({
+      next: (flag) => {
+        if (flag) {
+          window.alert('Shared successfully');
+        } else {
+          window.alert('Undo Share successfully');
         }
-      });
+      },
+      error: (error) => {
+        console.error('Error updating share status:', error);
+        query.share = !query.share; // Revert the share state on error
+        window.alert(error.error.detail);
+      }
+    });
   }
 
   formatDates(query: Query): string {

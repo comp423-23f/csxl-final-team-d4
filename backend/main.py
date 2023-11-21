@@ -13,7 +13,8 @@ from .api import (
     authentication,
     user,
 )
-from .api.coworking import status, reservation, ambassador, query
+from .api.coworking import status, reservation, ambassador
+from .api.admin import query
 from .api.admin import users as admin_users
 from .api.admin import roles as admin_roles
 from .services.exceptions import UserPermissionException, ResourceNotFoundException
