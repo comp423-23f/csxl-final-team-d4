@@ -60,7 +60,7 @@ def update_query_share(
 
 @api.get("/get-shared-queries", response_model=List[Query], tags=["Coworking"])
 def get_shared_queries(
-    user: User = Depends(authenticated_pid),
+    user: User = Depends(registered_user),
     query_svc: QueryService = Depends(QueryService),
 ) -> List[Query]:
     try:
