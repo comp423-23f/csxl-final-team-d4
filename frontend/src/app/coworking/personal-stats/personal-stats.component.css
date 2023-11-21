@@ -74,4 +74,17 @@
   .report-name, .report-range, .report-compare {
     font-weight: bold;
   }
+  .chart-container {
+    max-width: 800px; /* Adjust this value as needed */
+    max-height: 500px; /* Adjust this value as needed */
+    padding: 15px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    background-color: #fff;
+  }
+  
+  canvas {
+    max-width: 100%; /* Ensures the canvas (chart) is responsive within the container */
+    height: auto; /* Maintains aspect ratio */
+  }
   
