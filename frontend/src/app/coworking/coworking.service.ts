@@ -66,4 +66,10 @@ export class CoworkingService implements OnDestroy {
       .post<ReservationJSON>('/api/coworking/reservation', reservation)
       .pipe(map(parseReservationJSON));
   }
+
+  getStats(startDate: Date, endDate: Date): Observable<any> {
+    const start = startDate.toISOString().split('T')[0];
+    const end = endDate.toISOString().split('T')[0];
+    return this.http.get<any>(`api/coworking/get-stats/${start}/${end}`);
+  }
 }

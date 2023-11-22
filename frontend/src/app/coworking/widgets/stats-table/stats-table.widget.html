@@ -25,14 +25,10 @@
     <tr>
       <td>Outliers</td>
       <td>
-        <ul>
-          <li *ngFor="let outlier of outliers.original">{{ outlier }}</li>
-        </ul>
+        <li *ngFor="let outlier of outliers.original">{{ outlier }}</li>
       </td>
       <td *ngIf="compareData.length">
-        <ul>
-          <li *ngFor="let outlier of outliers.compare">{{ outlier }}</li>
-        </ul>
+        <li *ngFor="let outlier of outliers.compare">{{ outlier }}</li>
       </td>
     </tr>
   </tbody>

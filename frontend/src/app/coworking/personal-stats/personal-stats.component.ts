@@ -141,7 +141,7 @@ export class PersonalStatsComponent implements OnInit {
 
   private formatDateComponents(date: Date): [number, number, number] {
     const year = date.getFullYear();
-    const month = date.getMonth() + 1; // JavaScript months are 0-indexed
+    const month = date.getMonth() + 1;
     const day = date.getDate();
     return [year, month, day];
   }
