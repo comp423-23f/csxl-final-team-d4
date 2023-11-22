@@ -23,6 +23,21 @@
       <td *ngIf="compareData.length">{{ sd.compare }}</td>
     </tr>
     <tr>
+      <td>Mean Stay Time</td>
+      <td>{{ meanStayTime }}</td>
+      <td *ngIf="c_meanStayTime">{{ c_meanStayTime }}</td>
+    </tr>
+    <tr>
+      <td>Most frequent Check-in Hour</td>
+      <td>{{ mostCommonCheckinHour }}</td>
+      <td *ngIf="c_mostCommonCheckinHour">{{ c_mostCommonCheckinHour }}</td>
+    </tr>
+    <tr>
+      <td>Most frequent Check-in Day</td>
+      <td>{{ mostCommonCheckinDay }}</td>
+      <td *ngIf="c_mostCommonCheckinDay">{{ c_mostCommonCheckinDay }}</td>
+    </tr>
+    <tr>
       <td>Outliers</td>
       <td>
         <li *ngFor="let outlier of outliers.original">{{ outlier }}</li>

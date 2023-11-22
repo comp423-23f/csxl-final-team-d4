@@ -283,7 +283,7 @@ export class StatisticsComponent implements OnInit {
   }
   deleteQuery(query: Query): void {
     this.http
-      .delete(`/api/coworking/queries/delete-query/${query.name}`)
+      .delete(`/api/admin/queries/delete-query/${query.name}`)
       .subscribe({
         next: () => {
           this.queries = this.queries.filter((q) => q.id !== query.id);

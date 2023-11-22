@@ -29,6 +29,7 @@ def get_stats(
     user: User = Depends(authenticated_pid),
 ) -> dict:
     try:
+        print("api method called")
         return reservation_svc.get_mean_stay_and_peak_checkin_info(
             user, start_date, end_date
         )

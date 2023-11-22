@@ -778,7 +778,6 @@ class ReservationService:
                 for r in checkin_reservations
             ]
         )
-        print("The dataframe is: ", df)
 
         most_common_day = df["day"].mode()[0] if not df.empty else None
         most_common_hour = df["hour"].mode()[0] if not df.empty else None
@@ -799,7 +798,6 @@ class ReservationService:
             if most_common_hour is not None
             else "N/A"
         )
-        print("we get here")
 
         return {
             "mean_stay_time": str(mean_stay_time),

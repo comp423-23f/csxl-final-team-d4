@@ -161,32 +161,36 @@ export class StatsTable implements OnChanges {
       : null;
     console.log('The start_date is: ', start_date);
     this.http
-      .get<any>('/api/statistics/get-status/${start_date}/${end_date}')
+      .get<any>(`/api/statistics/get-stats/${start_date}/${end_date}`)
       .subscribe({
         next: (data) => {
-          this.meanStayTime = String(data.mean_stay_time);
+          this.meanStayTime = data.mean_stay_time.split('.')[0];
           this.mostCommonCheckinDay = String(data.most_common_checkin_day);
           this.mostCommonCheckinHour = String(data.most_common_checkin_hour);
         },
         error: (err) => {
-          console.error('Error fetching data: ', err);
+          console.error('Error fetching origin data: ', err);
         }
       });
     console.log('Loaded original info: ', this.meanStayTime);
-    this.http
-      .get<any>(
-        '/api/statistics/get-status/${compare_start_date}/${compare_end_date}'
-      )
-      .subscribe({
-        next: (data) => {
-          this.c_meanStayTime = String(data.mean_stay_time);
-          this.c_mostCommonCheckinDay = String(data.most_common_checkin_day);
-          this.c_mostCommonCheckinHour = String(data.most_common_checkin_hour);
-        },
-        error: (err) => {
-          console.error('Error fetching data: ', err);
-        }
-      });
+    if (compare_end_date != null && compare_start_date != null) {
+      this.http
+        .get<any>(
+          `/api/statistics/get-stats/${compare_start_date}/${compare_end_date}`
+        )
+        .subscribe({
+          next: (data) => {
+            this.c_meanStayTime = data.mean_stay_time.split('.')[0];
+            this.c_mostCommonCheckinDay = String(data.most_common_checkin_day);
+            this.c_mostCommonCheckinHour = String(
+              data.most_common_checkin_hour
+            );
+          },
+          error: (err) => {
+            console.error('Error fetching compare data: ', err);
+          }
+        });
+    }
     console.log('Loaded compare info: ', this.c_meanStayTime);
   }
 }
