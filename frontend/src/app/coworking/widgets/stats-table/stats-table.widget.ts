@@ -159,7 +159,6 @@ export class StatsTable implements OnChanges {
     const compare_end_date = this.compareEndDate
       ? this.subtractHours(this.compareEndDate, 5).toISOString()
       : null;
-    console.log('The start_date is: ', start_date);
     this.http
       .get<any>(`/api/statistics/get-stats/${start_date}/${end_date}`)
       .subscribe({
@@ -172,7 +171,6 @@ export class StatsTable implements OnChanges {
           console.error('Error fetching origin data: ', err);
         }
       });
-    console.log('Loaded original info: ', this.meanStayTime);
     if (compare_end_date != null && compare_start_date != null) {
       this.http
         .get<any>(
@@ -191,6 +189,5 @@ export class StatsTable implements OnChanges {
           }
         });
     }
-    console.log('Loaded compare info: ', this.c_meanStayTime);
   }
 }

@@ -64,6 +64,7 @@ def get_shared_queries(
     query_svc: QueryService = Depends(QueryService),
 ) -> List[Query]:
     try:
+        print("////////////////////////get shared query callled")
         return query_svc.get_shared()
     except HTTPException as e:
         raise HTTPException(status_code=e.status_code, detail=e.detail)

@@ -34,15 +34,12 @@ export class PersonalStatsComponent implements OnInit {
   };
 
   retrieveSharedQueries(): void {
-    this.http
-      .get<Query[]>('/api/coworking/queries/get-shared-queries')
-      .subscribe({
-        next: (response) => {
-          this.sharedQueries = response;
-        },
-        error: (error) =>
-          console.error('Error retrieving shared queries:', error)
-      });
+    this.http.get<Query[]>('/api/admin/queries/get-shared-queries').subscribe({
+      next: (response) => {
+        this.sharedQueries = response;
+      },
+      error: (error) => console.error('Error retrieving shared queries:', error)
+    });
   }
 
   fetchDataForQuery(query: Query): void {
