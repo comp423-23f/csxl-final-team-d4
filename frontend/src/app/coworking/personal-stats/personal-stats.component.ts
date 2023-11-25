@@ -4,6 +4,7 @@ import { ChartConfiguration, ChartOptions } from 'chart.js';
 import { Query } from '../coworking.models';
 import { Route } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
+import { Profile, ProfileService } from '../../profile/profile.service';
 
 @Component({
   selector: 'app-personal-stats',
@@ -11,6 +12,9 @@ import { forkJoin, of } from 'rxjs';
   styleUrls: ['./personal-stats.component.css']
 })
 export class PersonalStatsComponent implements OnInit {
+  profile: Profile | undefined;
+  personalselectedQuery: Query | null = null;
+  personalQueries: Query[] = [];
   selectedQuery: Query | null = null;
   sharedQueries: Query[] = [];
   displayChart = false;
@@ -26,7 +30,16 @@ export class PersonalStatsComponent implements OnInit {
   ngOnInit(): void {
     this.retrieveSharedQueries();
   }
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private profileService: ProfileService
+  ) {
+    this.profileService.profile$.subscribe((profile: Profile | undefined) => {
+      if (profile) {
+        this.profile = profile;
+      }
+    });
+  }
   public static Route: Route = {
     path: 'personal-stats',
     component: PersonalStatsComponent,

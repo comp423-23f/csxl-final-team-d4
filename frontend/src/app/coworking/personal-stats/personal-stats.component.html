@@ -35,3 +35,19 @@
     [legend]="lineChartLegend">
   </canvas>
 </div>
+<div>
+  <h2>
+    {{ profile?.first_name }} {{ profile?.last_name }} 's Personal Statistics
+  </h2>
+
+  <mat-form-field appearance="fill">
+    <mat-label>View personal statistics</mat-label>
+    <mat-select
+      [(value)]="selectedQuery"
+      (selectionChange)="selectQueryAndFetchData(selectedQuery)">
+      <mat-option *ngFor="let query of sharedQueries" [value]="query">
+        {{ query.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
