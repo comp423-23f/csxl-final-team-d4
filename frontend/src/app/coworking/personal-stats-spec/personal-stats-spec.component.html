@@ -1,0 +1,150 @@
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.4.0/remixicon.css"
+  crossorigin="" />
+
+<div style="display: flex; align-items: center">
+  <mat-form-field appearance="fill">
+    <mat-label>Start Date</mat-label>
+    <input matInput [matDatepicker]="startPicker" [(ngModel)]="startDate" />
+    <mat-datepicker-toggle
+      matSuffix
+      [for]="startPicker"></mat-datepicker-toggle>
+    <mat-datepicker #startPicker startView="month"></mat-datepicker>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>End Date</mat-label>
+    <input
+      matInput
+      [matDatepicker]="endPicker"
+      [matDatepickerFilter]="endDateFilter"
+      [(ngModel)]="endDate"
+      (dateChange)="onEndDateChange($event, true)" />
+    <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+    <mat-datepicker #endPicker startView="month"></mat-datepicker>
+  </mat-form-field>
+</div>
+
+<div>
+  <mat-form-field appearance="fill">
+    <mat-label>(Optional) Start Date2</mat-label>
+    <input
+      matInput
+      [matDatepicker]="compareStartPicker"
+      [(ngModel)]="compareStartDate" />
+    <mat-datepicker-toggle
+      matSuffix
+      [for]="compareStartPicker"></mat-datepicker-toggle>
+    <mat-datepicker #compareStartPicker startView="month"></mat-datepicker>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>(Optional) End Date2</mat-label>
+    <input
+      matInput
+      [matDatepicker]="compareEndPicker"
+      [matDatepickerFilter]="endcompareDateFilter"
+      [(ngModel)]="compareEndDate"
+      (dateChange)="onEndDateChange($event, false)" />
+    <mat-datepicker-toggle
+      matSuffix
+      [for]="compareEndPicker"></mat-datepicker-toggle>
+    <mat-datepicker #compareEndPicker startView="month"></mat-datepicker>
+  </mat-form-field>
+  <div class="horizontal-container">
+    <button
+      mat-raised-button
+      color="accent"
+      (click)="fetchData()"
+      type="button"
+      class="search">
+      Search
+    </button>
+    <button
+      mat-raised-button
+      color="accent"
+      (click)="saveReport()"
+      type="button"
+      class="save">
+      Save
+    </button>
+    <mat-accordion class="custom-accordion">
+      <mat-expansion-panel class="custom-expansion-panel">
+        <mat-expansion-panel-header class="custom-expansion-panel-header">
+          <mat-panel-title class="custom-panel-title">Reports</mat-panel-title>
+          <mat-panel-description class="custom-panel-description">
+            Click a report to view its statistics
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <div
+          *ngFor="let report of queries; let i = index"
+          class="custom-panel-content">
+          <div (click)="selectReportAndFetchData(report)" class="report-line">
+            <span class="report-name"> Name: {{ report.name }}</span
+            >,
+            <span class="report-range"
+              >Range: {{ report.start_date | date: 'MM/dd/yy' }} to
+              {{ report.end_date | date: 'MM/dd/yy' }}</span
+            >
+            <ng-container *ngIf="report.compare_start_date">
+              <span class="report-compare"
+                >, Compare:
+                {{ report.compare_start_date | date: 'MM/dd/yy' }} to
+                {{ report.compare_end_date | date: 'MM/dd/yy' }}</span
+              >
+            </ng-container>
+          </div>
+          <button
+            mat-raised-button
+            (click)="updateShare(report)"
+            class="custom-panel-button"
+            [color]="getColor(report)"
+            [ngClass]="report.share ? 'undo-button' : 'share-button'">
+            <ng-container *ngIf="report.share; else notShared">
+              <i class="ri-arrow-go-back-line"></i>
+            </ng-container>
+            <ng-template #notShared>
+              <i class="ri-share-box-line"></i>
+            </ng-template>
+          </button>
+          <button
+            mat-raised-button
+            color="warn"
+            (click)="deleteQuery(report)"
+            class="delete-button">
+            <i class="ri-close-line"></i>
+          </button>
+          <mat-divider *ngIf="i < queries.length - 1"></mat-divider>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</div>
+
+<div *ngIf="displayChart" style="display: block">
+  <canvas
+    baseChart
+    width="600"
+    height="400"
+    [type]="'line'"
+    [data]="lineChartData"
+    [options]="lineChartOptions"
+    [legend]="lineChartLegend"></canvas>
+</div>
+
+<div class="stats-table">
+  <stats-table
+    [originalData_0]="
+      lineChartData.datasets[0] ? lineChartData.datasets[0].data : []
+    "
+    [compareData_0]="
+      lineChartData.datasets[1] ? lineChartData.datasets[1].data : []
+    "
+    [startDate]="startDate"
+    [endDate]="endDate"
+    [compareStartDate]="compareStartDate"
+    [compareEndDate]="compareEndDate">
+  </stats-table>
+</div>

@@ -28,6 +28,7 @@ import { SearchReports } from './widgets/search-reports/search-reports.widget';
 import { PersonalStatsComponent } from './personal-stats/personal-stats.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
+import { PersonalStatsSpecComponent } from './personal-stats-spec/personal-stats-spec.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { MatOptionModule } from '@angular/material/core';
     StatisticsComponent,
     StatsTable,
     SearchReports,
-    PersonalStatsComponent
+    PersonalStatsComponent,
+    PersonalStatsSpecComponent
   ],
   imports: [
     CommonModule,
