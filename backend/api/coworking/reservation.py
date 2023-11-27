@@ -4,7 +4,9 @@ This API is used to make and manage reservations."""
 
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
-from ..authentication import registered_user
+
+from backend.services.user import UserService
+from ..authentication import authenticated_pid, registered_user
 from starlette.responses import JSONResponse
 from ...services.coworking.reservation import ReservationService
 from ...models import User
@@ -93,4 +95,28 @@ def get_daily_reservation_counts(
     counts = reservation_svc.count_reservations_by_date(subject, start_date, end_date)
     print(counts)
 
+    return counts
+
+
+@api.get("/statistics/get-personal-daily", tags=["Coworking"])
+def get_personal_daily_reservation_counts(
+    start_date: datetime,
+    end_date: datetime,
+    subject: User = Depends(registered_user),
+    reservation_svc: ReservationService = Depends(),
+    pid_onyen: tuple[int, str] = Depends(authenticated_pid),
+    user_svc: UserService = Depends(),
+):
+    """Get daily reservation counts with start and end dates specified as year, month, day."""
+
+    pid, onyen = pid_onyen
+    user = user_svc.get(pid)
+    if user and user.id:
+        user_id = user.id
+        counts = reservation_svc.count_personal_reservations_by_date(
+            subject, start_date, end_date, user_id
+        )
+        print(counts)
+    else:
+        raise Exception("User is None")
     return counts

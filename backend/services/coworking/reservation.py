@@ -9,6 +9,7 @@ from sqlalchemy import Date, func
 from sqlalchemy.orm import Session, joinedload
 
 from backend.entities.coworking import reservation_entity
+from backend.services.user import UserService
 from ...database import db_session
 from ...models.user import User, UserIdentity
 from ..exceptions import UserPermissionException, ResourceNotFoundException
@@ -51,6 +52,7 @@ class ReservationService:
         policy_svc: PolicyService = Depends(),
         operating_hours_svc: OperatingHoursService = Depends(),
         seats_svc: SeatService = Depends(),
+        userService: UserService = Depends(),
     ):
         """Initializes a new ReservationService.
 
@@ -62,6 +64,7 @@ class ReservationService:
         self._policy_svc = policy_svc
         self._operating_hours_svc = operating_hours_svc
         self._seat_svc = seats_svc
+        self.userService = userService
 
     def get_reservation(self, subject: User, id: int) -> Reservation:
         """Lookup a reservation by ID.
@@ -804,3 +807,36 @@ class ReservationService:
             "most_common_checkin_day": most_common_day_str,
             "most_common_checkin_hour": most_common_hour_str,
         }
+
+    def count_personal_reservations_by_date(
+        self, subject: User, start_date: datetime, end_date: datetime, user_id: int
+    ) -> dict:
+        self._permission_svc.enforce(subject, "coworking.reservation.read", f"user/")
+        reservation_counts = defaultdict(int)
+        reservations = (
+            self._session.query(
+                func.date(ReservationEntity.start).label("date"),
+                func.count("*").label("count"),
+            )
+            .join(ReservationEntity.users)
+            .filter(
+                ReservationEntity.start >= start_date,
+                ReservationEntity.start < end_date,
+                ReservationEntity.state.not_in(
+                    [ReservationState.CANCELLED, ReservationState.DRAFT]
+                ),
+                UserEntity.id == user_id,
+            )
+            .group_by("date")
+            .all()
+        )
+
+        current_date = start_date
+        while current_date <= end_date:
+            reservation_counts[current_date.date()] = 0
+            current_date += timedelta(days=1)
+
+        for reservation in reservations:
+            reservation_date, count = reservation
+            reservation_counts[reservation_date] = count
+        return reservation_counts
