@@ -678,30 +678,6 @@ class ReservationService:
                 available_seats.append(seat)
         return available_seats
 
-    def _get_active_reservations(self, time_range: TimeRange) -> Sequence[Reservation]:
-        reservations = (
-            self._session.query(ReservationEntity)
-            .join(ReservationEntity.users)
-            .filter(
-                ReservationEntity.start < time_range.end,
-                ReservationEntity.end > time_range.start,
-                ReservationEntity.state.not_in(
-                    [ReservationState.CANCELLED, ReservationState.CHECKED_OUT]
-                ),
-            )
-            .options(
-                joinedload(ReservationEntity.users), joinedload(ReservationEntity.seats)
-            )
-            .order_by(ReservationEntity.start)
-            .all()
-        )
-
-        reservations = self._state_transition_reservation_entities_by_time(
-            datetime.now(), reservations
-        )
-
-        return [reservation.to_model() for reservation in reservations]
-
     def count_reservations_by_date(
         self, subject: User, start_date: datetime, end_date: datetime
     ) -> dict:
@@ -808,35 +784,24 @@ class ReservationService:
             "most_common_checkin_hour": most_common_hour_str,
         }
 
-    def count_personal_reservations_by_date(
-        self, subject: User, start_date: datetime, end_date: datetime, user_id: int
-    ) -> dict:
-        self._permission_svc.enforce(subject, "coworking.reservation.read", f"user/")
-        reservation_counts = defaultdict(int)
+    def get_personl_reservation_history(self, subject: User) -> Sequence[Reservation]:
         reservations = (
-            self._session.query(
-                func.date(ReservationEntity.start).label("date"),
-                func.count("*").label("count"),
-            )
+            self._session.query(ReservationEntity)
             .join(ReservationEntity.users)
             .filter(
-                ReservationEntity.start >= start_date,
-                ReservationEntity.start < end_date,
-                ReservationEntity.state.not_in(
-                    [ReservationState.CANCELLED, ReservationState.DRAFT]
+                ReservationEntity.state.in_(
+                    (
+                        ReservationState.CHECKED_IN,
+                        ReservationState.CHECKED_OUT,
+                        ReservationState.CANCELLED,
+                    )
                 ),
-                UserEntity.id == user_id,
+                UserEntity.id == subject.id,
             )
-            .group_by("date")
+            .options(
+                joinedload(ReservationEntity.users), joinedload(ReservationEntity.seats)
+            )
+            .order_by(ReservationEntity.start.desc())
             .all()
         )
-
-        current_date = start_date
-        while current_date <= end_date:
-            reservation_counts[current_date.date()] = 0
-            current_date += timedelta(days=1)
-
-        for reservation in reservations:
-            reservation_date, count = reservation
-            reservation_counts[reservation_date] = count
-        return reservation_counts
+        return [reservation.to_model() for reservation in reservations]

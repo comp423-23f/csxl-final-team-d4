@@ -98,25 +98,18 @@ def get_daily_reservation_counts(
     return counts
 
 
-@api.get("/statistics/get-personal-daily", tags=["Coworking"])
-def get_personal_daily_reservation_counts(
-    start_date: datetime,
-    end_date: datetime,
+@api.get("/statistics/get_personal_statistical_history", tags=["Coworking"])
+def get_personal_statistical_history(
     subject: User = Depends(registered_user),
     reservation_svc: ReservationService = Depends(),
     pid_onyen: tuple[int, str] = Depends(authenticated_pid),
     user_svc: UserService = Depends(),
 ):
-    """Get daily reservation counts with start and end dates specified as year, month, day."""
-
+    """Get Personal Statistical History"""
     pid, onyen = pid_onyen
     user = user_svc.get(pid)
-    if user and user.id:
-        user_id = user.id
-        counts = reservation_svc.count_personal_reservations_by_date(
-            subject, start_date, end_date, user_id
-        )
-        print(counts)
+    if user:
+        reservation = reservation_svc.get_personl_reservation_history(user)
     else:
         raise Exception("User is None")
-    return counts
+    return reservation
