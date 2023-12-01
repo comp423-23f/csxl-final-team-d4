@@ -3,6 +3,7 @@
 This API is used to make and manage reservations."""
 
 from datetime import datetime
+from typing import Sequence
 from fastapi import APIRouter, Depends, HTTPException
 
 from backend.services.user import UserService
@@ -98,7 +99,11 @@ def get_daily_reservation_counts(
     return counts
 
 
-@api.get("/statistics/get_personal_statistical_history", tags=["Coworking"])
+@api.get(
+    "/statistics/get_personal_statistical_history",
+    response_model=Sequence[Reservation],
+    tags=["Coworking"],
+)
 def get_personal_statistical_history(
     subject: User = Depends(registered_user),
     reservation_svc: ReservationService = Depends(),
