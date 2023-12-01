@@ -21,7 +21,7 @@ openapi_tags = {
 }
 
 
-@api.get("/get-stats/{start_date}/{end_date}", tags=["Statistics"])
+@api.get("/get_stats/{start_date}/{end_date}", tags=["Statistics"])
 def get_stats(
     start_date: datetime,
     end_date: datetime,

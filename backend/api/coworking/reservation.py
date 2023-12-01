@@ -71,7 +71,7 @@ def cancel_reservation(
     )
 
 
-@api.get("/statistics/get-daily", tags=["Coworking"])
+@api.get("/statistics/get_daily", tags=["Coworking"])
 def get_daily_reservation_counts(
     year_start: int,
     month_start: int,

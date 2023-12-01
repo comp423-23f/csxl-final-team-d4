@@ -116,7 +116,7 @@ export class StatisticsComponent implements OnInit {
       this.startDate
     );
     const [endYear, endMonth, endDay] = this.formatDateComponents(this.endDate);
-    const mainEndpoint = `/api/coworking/statistics/get-daily?year_start=${startYear}&month_start=${startMonth}&day_start=${startDay}&year_end=${endYear}&month_end=${endMonth}&day_end=${endDay}`;
+    const mainEndpoint = `/api/coworking/statistics/get_daily?year_start=${startYear}&month_start=${startMonth}&day_start=${startDay}&year_end=${endYear}&month_end=${endMonth}&day_end=${endDay}`;
 
     const mainData$ = this.http.get(mainEndpoint);
     let compareData$: any;
@@ -126,7 +126,7 @@ export class StatisticsComponent implements OnInit {
         this.formatDateComponents(this.compareStartDate);
       const [compareEndYear, compareEndMonth, compareEndDay] =
         this.formatDateComponents(this.compareEndDate);
-      const compareEndpoint = `/api/coworking/statistics/get-daily?year_start=${compareStartYear}&month_start=${compareStartMonth}&day_start=${compareStartDay}&year_end=${compareEndYear}&month_end=${compareEndMonth}&day_end=${compareEndDay}`;
+      const compareEndpoint = `/api/coworking/statistics/get_daily?year_start=${compareStartYear}&month_start=${compareStartMonth}&day_start=${compareStartDay}&year_end=${compareEndYear}&month_end=${compareEndMonth}&day_end=${compareEndDay}`;
 
       compareData$ = this.http.get(compareEndpoint);
     } else {
@@ -201,7 +201,7 @@ export class StatisticsComponent implements OnInit {
         requestData.compare_start_date = null;
       }
       this.http
-        .post<Query>('/api/admin/queries/save-reports', requestData)
+        .post<Query>('/api/admin/queries/save_reports', requestData)
         .subscribe({
           next: (response) => {
             window.alert('Report saved successfully.');
@@ -216,7 +216,7 @@ export class StatisticsComponent implements OnInit {
   }
   //..............for the adding widget
   retrieveQueries(): void {
-    this.http.get<Query[]>('/api/admin/queries/get-all-queries').subscribe({
+    this.http.get<Query[]>('/api/admin/queries/get_all_queries').subscribe({
       next: (response) => {
         this.queries = response.map((query) => ({
           ...query,
@@ -237,7 +237,7 @@ export class StatisticsComponent implements OnInit {
   updateShare(query: Query): void {
     query.share = !query.share; // Toggle the share state optimistically
     const endpoint = query.share ? 'update-share' : 'undo-share';
-    this.http.get(`/api/admin/queries/update-share/${query.name}`).subscribe({
+    this.http.get(`/api/admin/queries/update_share/${query.name}`).subscribe({
       next: (flag) => {
         if (flag) {
           window.alert('Shared successfully');
@@ -283,7 +283,7 @@ export class StatisticsComponent implements OnInit {
   }
   deleteQuery(query: Query): void {
     this.http
-      .delete(`/api/admin/queries/delete-query/${query.name}`)
+      .delete(`/api/admin/queries/delete_query/${query.name}`)
       .subscribe({
         next: () => {
           this.queries = this.queries.filter((q) => q.id !== query.id);

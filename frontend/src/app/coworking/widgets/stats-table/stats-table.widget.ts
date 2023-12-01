@@ -160,7 +160,7 @@ export class StatsTable implements OnChanges {
       ? this.subtractHours(this.compareEndDate, 5).toISOString()
       : null;
     this.http
-      .get<any>(`/api/statistics/get-stats/${start_date}/${end_date}`)
+      .get<any>(`/api/statistics/get_stats/${start_date}/${end_date}`)
       .subscribe({
         next: (data) => {
           this.meanStayTime = data.mean_stay_time.split('.')[0];
@@ -174,7 +174,7 @@ export class StatsTable implements OnChanges {
     if (compare_end_date != null && compare_start_date != null) {
       this.http
         .get<any>(
-          `/api/statistics/get-stats/${compare_start_date}/${compare_end_date}`
+          `/api/statistics/get_stats/${compare_start_date}/${compare_end_date}`
         )
         .subscribe({
           next: (data) => {

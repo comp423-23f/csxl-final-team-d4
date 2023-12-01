@@ -47,7 +47,7 @@ export class PersonalStatsComponent implements OnInit {
   };
 
   retrieveSharedQueries(): void {
-    this.http.get<Query[]>('/api/admin/queries/get-shared-queries').subscribe({
+    this.http.get<Query[]>('/api/admin/queries/get_shared_queries').subscribe({
       next: (response) => {
         this.sharedQueries = response;
       },
@@ -86,7 +86,7 @@ export class PersonalStatsComponent implements OnInit {
     const [startYear, startMonth, startDay] =
       this.formatDateComponents(startDate);
     const [endYear, endMonth, endDay] = this.formatDateComponents(endDate);
-    const mainEndpoint = `/api/coworking/statistics/get-daily?year_start=${startYear}&month_start=${startMonth}&day_start=${startDay}&year_end=${endYear}&month_end=${endMonth}&day_end=${endDay}`;
+    const mainEndpoint = `/api/coworking/statistics/get_daily?year_start=${startYear}&month_start=${startMonth}&day_start=${startDay}&year_end=${endYear}&month_end=${endMonth}&day_end=${endDay}`;
 
     const mainData$ = this.http.get(mainEndpoint);
     let compareData$: any;
@@ -96,7 +96,7 @@ export class PersonalStatsComponent implements OnInit {
         this.formatDateComponents(compareStartDate);
       const [compareEndYear, compareEndMonth, compareEndDay] =
         this.formatDateComponents(compareEndDate);
-      const compareEndpoint = `/api/coworking/statistics/get-daily?year_start=${compareStartYear}&month_start=${compareStartMonth}&day_start=${compareStartDay}&year_end=${compareEndYear}&month_end=${compareEndMonth}&day_end=${compareEndDay}`;
+      const compareEndpoint = `/api/coworking/statistics/get_daily?year_start=${compareStartYear}&month_start=${compareStartMonth}&day_start=${compareStartDay}&year_end=${compareEndYear}&month_end=${compareEndMonth}&day_end=${compareEndDay}`;
 
       compareData$ = this.http.get(compareEndpoint);
     } else {
