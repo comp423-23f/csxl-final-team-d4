@@ -91,13 +91,3 @@
     max-width: 100%;
 }
 
-.viewStats{
-    margin-left: 420px;
-    font-size: 18px;
-    text-decoration: underline;
-    height: 70px;
-    width: 240px;
-    display: flex;
-    align-items: center;
-
-}
