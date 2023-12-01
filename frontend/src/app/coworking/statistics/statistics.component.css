@@ -61,6 +61,7 @@ mat-divider {
     padding: 10px;
     cursor: pointer; 
     transition: color 0.3s ease;
+    /* margin-left: 10px; */
   }
   .report-line:hover {
     color: #007bff;
