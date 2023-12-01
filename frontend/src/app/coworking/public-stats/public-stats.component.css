@@ -81,24 +81,13 @@
     border: 1px solid #ccc;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     background-color: #fff;
-    align-items: center;
-    margin: auto;
   }
   
   canvas {
     max-width: 100%; 
     height: auto; 
   }
-  .title{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .dropdown{
-    margin-left: 475px;
-  }
-  .query-details{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+  .mat-mdc-card {
+    max-width: 100%;
+}
+
