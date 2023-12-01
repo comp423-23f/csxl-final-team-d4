@@ -25,9 +25,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { SearchReports } from './widgets/search-reports/search-reports.widget';
-import { PublicStatsComponent } from './public-stats/public-stats.component';
+import { PersonalStatsComponent } from './personal-stats/personal-stats.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
+import { PersonalStatsSpecComponent } from './personal-stats-spec/personal-stats-spec.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { MatOptionModule } from '@angular/material/core';
     StatisticsComponent,
     StatsTable,
     SearchReports,
-    PublicStatsComponent
+    PersonalStatsComponent,
+    PersonalStatsSpecComponent
   ],
   imports: [
     CommonModule,

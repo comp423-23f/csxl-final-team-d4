@@ -9,6 +9,7 @@ from sqlalchemy import Date, func
 from sqlalchemy.orm import Session, joinedload
 
 from backend.entities.coworking import reservation_entity
+from backend.services.user import UserService
 from ...database import db_session
 from ...models.user import User, UserIdentity
 from ..exceptions import UserPermissionException, ResourceNotFoundException
@@ -51,6 +52,7 @@ class ReservationService:
         policy_svc: PolicyService = Depends(),
         operating_hours_svc: OperatingHoursService = Depends(),
         seats_svc: SeatService = Depends(),
+        userService: UserService = Depends(),
     ):
         """Initializes a new ReservationService.
 
@@ -62,6 +64,7 @@ class ReservationService:
         self._policy_svc = policy_svc
         self._operating_hours_svc = operating_hours_svc
         self._seat_svc = seats_svc
+        self.userService = userService
 
     def get_reservation(self, subject: User, id: int) -> Reservation:
         """Lookup a reservation by ID.
@@ -675,34 +678,10 @@ class ReservationService:
                 available_seats.append(seat)
         return available_seats
 
-    def _get_active_reservations(self, time_range: TimeRange) -> Sequence[Reservation]:
-        reservations = (
-            self._session.query(ReservationEntity)
-            .join(ReservationEntity.users)
-            .filter(
-                ReservationEntity.start < time_range.end,
-                ReservationEntity.end > time_range.start,
-                ReservationEntity.state.not_in(
-                    [ReservationState.CANCELLED, ReservationState.CHECKED_OUT]
-                ),
-            )
-            .options(
-                joinedload(ReservationEntity.users), joinedload(ReservationEntity.seats)
-            )
-            .order_by(ReservationEntity.start)
-            .all()
-        )
-
-        reservations = self._state_transition_reservation_entities_by_time(
-            datetime.now(), reservations
-        )
-
-        return [reservation.to_model() for reservation in reservations]
-
     def count_reservations_by_date(
         self, subject: User, start_date: datetime, end_date: datetime
     ) -> dict:
-        self._permission_svc.enforce(subject, "coworking.reservation.read", f"user/")
+        self._permission_svc.enforce(subject, "coworking.reservation.read", f"user/*")
         reservation_counts = defaultdict(int)
         reservations = (
             self._session.query(
@@ -804,3 +783,24 @@ class ReservationService:
             "most_common_checkin_day": most_common_day_str,
             "most_common_checkin_hour": most_common_hour_str,
         }
+    def get_personl_reservation_history(self, subject: User) -> Sequence[Reservation]:
+        reservations = (
+            self._session.query(ReservationEntity)
+            .join(ReservationEntity.users)
+            .filter(
+                ReservationEntity.state.in_(
+                    (
+                        ReservationState.CHECKED_IN,
+                        ReservationState.CHECKED_OUT,
+                        ReservationState.CANCELLED,
+                    )
+                ),
+                UserEntity.id == subject.id,
+            )
+            .options(
+                joinedload(ReservationEntity.users), joinedload(ReservationEntity.seats)
+            )
+            .order_by(ReservationEntity.start.desc())
+            .all()
+        )
+        return [reservation.to_model() for reservation in reservations]
