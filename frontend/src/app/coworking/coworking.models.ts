@@ -111,3 +111,13 @@ export interface ReservationRequest extends TimeRange {
   users: Profile[];
   seats: Seat[];
 }
+
+export interface Query {
+  id: number;
+  name: string;
+  start_date: Date;
+  end_date: Date;
+  compare_start_date?: Date;
+  compare_end_date?: Date;
+  share: boolean;
+}

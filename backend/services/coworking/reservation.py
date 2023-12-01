@@ -1,7 +1,7 @@
 """Service that manages reservations in the coworking space."""
 
 from fastapi import Depends
-from collections import defaultdict
+from collections import defaultdict, Counter
 from datetime import datetime, timedelta
 from random import random
 from typing import Sequence
@@ -9,6 +9,7 @@ from sqlalchemy import Date, func
 from sqlalchemy.orm import Session, joinedload
 
 from backend.entities.coworking import reservation_entity
+from backend.services.user import UserService
 from ...database import db_session
 from ...models.user import User, UserIdentity
 from ..exceptions import UserPermissionException, ResourceNotFoundException
@@ -29,6 +30,7 @@ from .seat import SeatService
 from .policy import PolicyService
 from .operating_hours import OperatingHoursService
 from ..permission import PermissionService
+import pandas as pd
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
@@ -50,6 +52,7 @@ class ReservationService:
         policy_svc: PolicyService = Depends(),
         operating_hours_svc: OperatingHoursService = Depends(),
         seats_svc: SeatService = Depends(),
+        userService: UserService = Depends(),
     ):
         """Initializes a new ReservationService.
 
@@ -61,6 +64,7 @@ class ReservationService:
         self._policy_svc = policy_svc
         self._operating_hours_svc = operating_hours_svc
         self._seat_svc = seats_svc
+        self.userService = userService
 
     def get_reservation(self, subject: User, id: int) -> Reservation:
         """Lookup a reservation by ID.
@@ -674,30 +678,6 @@ class ReservationService:
                 available_seats.append(seat)
         return available_seats
 
-    def _get_active_reservations(self, time_range: TimeRange) -> Sequence[Reservation]:
-        reservations = (
-            self._session.query(ReservationEntity)
-            .join(ReservationEntity.users)
-            .filter(
-                ReservationEntity.start < time_range.end,
-                ReservationEntity.end > time_range.start,
-                ReservationEntity.state.not_in(
-                    [ReservationState.CANCELLED, ReservationState.CHECKED_OUT]
-                ),
-            )
-            .options(
-                joinedload(ReservationEntity.users), joinedload(ReservationEntity.seats)
-            )
-            .order_by(ReservationEntity.start)
-            .all()
-        )
-
-        reservations = self._state_transition_reservation_entities_by_time(
-            datetime.now(), reservations
-        )
-
-        return [reservation.to_model() for reservation in reservations]
-
     def count_reservations_by_date(
         self, subject: User, start_date: datetime, end_date: datetime
     ) -> dict:
@@ -728,3 +708,100 @@ class ReservationService:
             reservation_date, count = reservation
             reservation_counts[reservation_date] = count
         return reservation_counts
+
+    def get_mean_stay_and_peak_checkin_info(
+        self, subject: User, start_date: datetime, end_date: datetime
+    ) -> dict:
+        print("backend service method called")
+        # I dont know if it is the right one to use
+        # self._permission_svc.enforce(subject, "coworking.reservation.read", "user/*")
+        checked_out_reservations = (
+            self._session.query(ReservationEntity)
+            .filter(
+                ReservationEntity.state == ReservationState.CHECKED_OUT,
+                ReservationEntity.start >= start_date,
+                ReservationEntity.end <= end_date,
+            )
+            .all()
+        )
+        print("Successfully created checked out reservation")
+
+        stay_times = [
+            (r.end - r.start).total_seconds() for r in checked_out_reservations
+        ]
+        mean_stay_time = (
+            timedelta(seconds=sum(stay_times) / len(stay_times))
+            if stay_times
+            else timedelta(0)
+        )
+
+        checkin_reservations = (
+            self._session.query(ReservationEntity)
+            .filter(
+                ReservationEntity.state.in_(
+                    [
+                        ReservationState.CHECKED_IN,
+                        ReservationState.CHECKED_OUT,
+                        ReservationState.CONFIRMED,
+                    ]
+                ),
+                ReservationEntity.start >= start_date,
+                ReservationEntity.start < end_date,
+            )
+            .all()
+        )
+
+        df = pd.DataFrame(
+            [
+                {"day": r.start.weekday(), "hour": r.start.hour}
+                for r in checkin_reservations
+            ]
+        )
+
+        most_common_day = df["day"].mode()[0] if not df.empty else None
+        most_common_hour = df["hour"].mode()[0] if not df.empty else None
+        days_of_week = [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday",
+        ]
+        most_common_day_str = (
+            days_of_week[most_common_day] if most_common_day is not None else "N/A"
+        )
+        most_common_hour_str = (
+            f"{most_common_hour:02d}:00-{(most_common_hour+1)%24:02d}:00"
+            if most_common_hour is not None
+            else "N/A"
+        )
+
+        return {
+            "mean_stay_time": str(mean_stay_time),
+            "most_common_checkin_day": most_common_day_str,
+            "most_common_checkin_hour": most_common_hour_str,
+        }
+
+    def get_personl_reservation_history(self, subject: User) -> Sequence[Reservation]:
+        reservations = (
+            self._session.query(ReservationEntity)
+            .join(ReservationEntity.users)
+            .filter(
+                ReservationEntity.state.in_(
+                    (
+                        ReservationState.CHECKED_IN,
+                        ReservationState.CHECKED_OUT,
+                        ReservationState.CANCELLED,
+                    )
+                ),
+                UserEntity.id == subject.id,
+            )
+            .options(
+                joinedload(ReservationEntity.users), joinedload(ReservationEntity.seats)
+            )
+            .order_by(ReservationEntity.start.desc())
+            .all()
+        )
+        return [reservation.to_model() for reservation in reservations]

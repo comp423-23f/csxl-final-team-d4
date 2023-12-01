@@ -6,9 +6,9 @@ from ...database import db_session
 from ...services.coworking.query import QueryService
 from ...models.coworking import Query, Query_noID
 
-api = APIRouter(prefix="/api/coworking/queries")
+api = APIRouter(prefix="/api/admin/queries")
 openapi_tags = {
-    "name": "Coworking",
+    "name": "Query",
     "description": "Methods to deal with query table",
 }
 
@@ -58,5 +58,17 @@ def update_query_share(
 ) -> bool:
     try:
         return query_svc.update_share(subject, query_name)
+    except HTTPException as e:
+        raise HTTPException(status_code=e.status_code, detail=e.detail)
+
+
+@api.get("/get-shared-queries", response_model=List[Query], tags=["Coworking"])
+def get_shared_queries(
+    user: User = Depends(registered_user),
+    query_svc: QueryService = Depends(QueryService),
+) -> List[Query]:
+    try:
+        print("////////////////////////get shared query callled")
+        return query_svc.get_shared()
     except HTTPException as e:
         raise HTTPException(status_code=e.status_code, detail=e.detail)

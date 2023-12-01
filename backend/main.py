@@ -13,7 +13,8 @@ from .api import (
     authentication,
     user,
 )
-from .api.coworking import status, reservation, ambassador, query
+from .api.coworking import status, reservation, ambassador
+from .api.admin import query, statistics
 from .api.admin import users as admin_users
 from .api.admin import roles as admin_roles
 from .services.exceptions import UserPermissionException, ResourceNotFoundException
@@ -42,6 +43,7 @@ app = FastAPI(
         health.openapi_tags,
         admin_users.openapi_tags,
         admin_roles.openapi_tags,
+        statistics.openapi_tags,
     ],
 )
 
@@ -59,6 +61,7 @@ feature_apis = [
     authentication,
     admin_users,
     admin_roles,
+    statistics,
 ]
 
 for feature_api in feature_apis:

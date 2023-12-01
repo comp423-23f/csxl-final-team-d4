@@ -4,16 +4,7 @@ import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { Route } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin, of } from 'rxjs';
-
-interface Query {
-  id: number;
-  name: string;
-  start_date: Date;
-  end_date: Date;
-  compare_start_date?: Date;
-  compare_end_date?: Date;
-  share: boolean;
-}
+import { Query } from '../coworking.models';
 
 @Component({
   selector: 'app-coworking-statistics',
@@ -210,9 +201,8 @@ export class StatisticsComponent implements OnInit {
         requestData.compare_start_date = null;
       }
       this.http
-        .post<Query>('/api/coworking/queries/save-reports', requestData)
+        .post<Query>('/api/admin/queries/save-reports', requestData)
         .subscribe({
-
           next: (response) => {
             window.alert('Report saved successfully.');
             this.queries.push(response);
@@ -226,7 +216,7 @@ export class StatisticsComponent implements OnInit {
   }
   //..............for the adding widget
   retrieveQueries(): void {
-    this.http.get<Query[]>('/api/coworking/queries/get-all-queries').subscribe({
+    this.http.get<Query[]>('/api/admin/queries/get-all-queries').subscribe({
       next: (response) => {
         this.queries = response.map((query) => ({
           ...query,
@@ -247,22 +237,20 @@ export class StatisticsComponent implements OnInit {
   updateShare(query: Query): void {
     query.share = !query.share; // Toggle the share state optimistically
     const endpoint = query.share ? 'update-share' : 'undo-share';
-    this.http
-      .get(`/api/coworking/queries/update-share/${query.name}`)
-      .subscribe({
-        next: (flag) => {
-          if (flag) {
-            window.alert('Shared successfully');
-          } else {
-            window.alert('Undo Share successfully');
-          }
-        },
-        error: (error) => {
-          console.error('Error updating share status:', error);
-          query.share = !query.share; // Revert the share state on error
-          window.alert(error.error.detail);
+    this.http.get(`/api/admin/queries/update-share/${query.name}`).subscribe({
+      next: (flag) => {
+        if (flag) {
+          window.alert('Shared successfully');
+        } else {
+          window.alert('Undo Share successfully');
         }
-      });
+      },
+      error: (error) => {
+        console.error('Error updating share status:', error);
+        query.share = !query.share; // Revert the share state on error
+        window.alert(error.error.detail);
+      }
+    });
   }
 
   formatDates(query: Query): string {
@@ -295,7 +283,7 @@ export class StatisticsComponent implements OnInit {
   }
   deleteQuery(query: Query): void {
     this.http
-      .delete(`/api/coworking/queries/delete-query/${query.name}`)
+      .delete(`/api/admin/queries/delete-query/${query.name}`)
       .subscribe({
         next: () => {
           this.queries = this.queries.filter((q) => q.id !== query.id);

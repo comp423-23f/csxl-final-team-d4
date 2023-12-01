@@ -1,16 +1,36 @@
-import { NONE_TYPE } from '@angular/compiler';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'stats-table',
   templateUrl: './stats-table.widget.html',
   styleUrls: ['./stats-table.widget.css']
 })
-export class StatsTable {
+export class StatsTable implements OnChanges {
   @Input() originalData_0: any[] = [];
   @Input() compareData_0: any[] = [];
+  @Input() startDate!: Date | null;
+  @Input() endDate!: Date | null;
+  @Input() compareStartDate: Date | null = null;
+  @Input() compareEndDate: Date | null = null;
+  meanStayTime: string = '';
+  mostCommonCheckinDay: string = '';
+  mostCommonCheckinHour: string = '';
+  c_meanStayTime: string = '';
+  c_mostCommonCheckinDay: string = '';
+  c_mostCommonCheckinHour: string = '';
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
+  ngOnChanges(changes: SimpleChanges) {
+    if (
+      changes['startDate'] ||
+      changes['endDate'] ||
+      changes['compareStartDate'] ||
+      changes['compareEndDate']
+    ) {
+      this.fetchData();
+    }
+  }
 
   get originalData(): number[] {
     return this.originalData_0.filter(
@@ -122,6 +142,52 @@ export class StatsTable {
       );
     } else {
       return sortedValues[base];
+    }
+  }
+  subtractHours = (date: Date, hours: number): Date => {
+    return new Date(date.getTime() - hours * 60 * 60 * 1000);
+  };
+  fetchData(): void {
+    if (!this.startDate || !this.endDate) {
+      return;
+    }
+    const start_date = this.subtractHours(this.startDate, 5).toISOString();
+    const end_date = this.subtractHours(this.endDate, 5).toISOString();
+    const compare_start_date = this.compareStartDate
+      ? this.subtractHours(this.compareStartDate, 5).toISOString()
+      : null;
+    const compare_end_date = this.compareEndDate
+      ? this.subtractHours(this.compareEndDate, 5).toISOString()
+      : null;
+    this.http
+      .get<any>(`/api/statistics/get-stats/${start_date}/${end_date}`)
+      .subscribe({
+        next: (data) => {
+          this.meanStayTime = data.mean_stay_time.split('.')[0];
+          this.mostCommonCheckinDay = String(data.most_common_checkin_day);
+          this.mostCommonCheckinHour = String(data.most_common_checkin_hour);
+        },
+        error: (err) => {
+          console.error('Error fetching origin data: ', err);
+        }
+      });
+    if (compare_end_date != null && compare_start_date != null) {
+      this.http
+        .get<any>(
+          `/api/statistics/get-stats/${compare_start_date}/${compare_end_date}`
+        )
+        .subscribe({
+          next: (data) => {
+            this.c_meanStayTime = data.mean_stay_time.split('.')[0];
+            this.c_mostCommonCheckinDay = String(data.most_common_checkin_day);
+            this.c_mostCommonCheckinHour = String(
+              data.most_common_checkin_hour
+            );
+          },
+          error: (err) => {
+            console.error('Error fetching compare data: ', err);
+          }
+        });
     }
   }
 }

@@ -62,3 +62,7 @@ class QueryService:
             self._session.commit()
             return query.share
         raise HTTPException(status_code=404, detail="Query not found")
+
+    def get_shared(self) -> List[Query]:
+        shared_entities = self._session.query(QueryEntity).filter_by(share=True).all()
+        return [entity.to_model() for entity in shared_entities]

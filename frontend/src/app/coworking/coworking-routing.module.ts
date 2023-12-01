@@ -4,13 +4,15 @@ import { CoworkingPageComponent } from './coworking-home/coworking-home.componen
 import { AmbassadorPageComponent } from './ambassador-home/ambassador-home.component';
 import { ReservationComponent } from './reservation/reservation.component';
 import { StatisticsComponent } from './statistics/statistics.component';
-
-
+import { PersonalStatsComponent } from './personal-stats/personal-stats.component';
+import { PersonalStatsSpecComponent } from './personal-stats-spec/personal-stats-spec.component';
 const routes: Routes = [
   CoworkingPageComponent.Route,
   ReservationComponent.Route,
   AmbassadorPageComponent.Route,
-  StatisticsComponent.Route
+  StatisticsComponent.Route,
+  PersonalStatsComponent.Route,
+  PersonalStatsSpecComponent.Route
 ];
 
 @NgModule({
