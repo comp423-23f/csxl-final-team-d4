@@ -25,7 +25,7 @@ export class PersonalStatsSpecComponent implements OnInit, OnDestroy {
   };
   reservations$: Observable<Reservation[]>;
 
-  columnsToDisplay = ['id', 'name', 'seat', 'start', 'end', 'state'];
+  columnsToDisplay = ['id', 'date', 'start', 'end', 'seat', 'state'];
 
   private refreshSubscription!: Subscription;
 

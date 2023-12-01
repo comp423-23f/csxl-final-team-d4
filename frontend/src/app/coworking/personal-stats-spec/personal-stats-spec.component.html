@@ -4,7 +4,11 @@
     *ngIf="reservations.length > 0; else noActive"
     appearance="outlined">
     <mat-card-header>
-      <mat-card-title>My Reservation History</mat-card-title>
+      <mat-card-title
+        >{{ reservations[0].users[0].first_name
+        }}{{ reservations[0].users[0].last_name }} 's Reservation
+        History</mat-card-title
+      >
     </mat-card-header>
     <mat-card-content>
       <table mat-table [dataSource]="reservations">
@@ -35,6 +39,12 @@
           <th mat-header-cell *matHeaderCellDef>Seat</th>
           <td mat-cell *matCellDef="let reservation">
             {{ reservation.seats[0].title }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>Date</th>
+          <td mat-cell *matCellDef="let reservation">
+            {{ reservation.end | date: 'MM/dd/yyyy' }}
           </td>
         </ng-container>
         <ng-container matColumnDef="state">
