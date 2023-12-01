@@ -49,10 +49,11 @@ mat-divider {
   margin: 0;
 }
 .custom-panel-content {
-    display: flex;
+    /* display: flex;
     justify-content: space-between;
     align-items: center;
-    cursor: pointer; 
+    cursor: pointer;  */
+    margin-left: 10px;
   }
   
   .report-line {
@@ -60,6 +61,7 @@ mat-divider {
     padding: 10px;
     cursor: pointer; 
     transition: color 0.3s ease;
+    /* margin-left: 10px; */
   }
   .report-line:hover {
     color: #007bff;
