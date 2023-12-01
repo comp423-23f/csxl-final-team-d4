@@ -701,7 +701,6 @@ class ReservationService:
     def count_reservations_by_date(
         self, subject: User, start_date: datetime, end_date: datetime
     ) -> dict:
-        self._permission_svc.enforce(subject, "coworking.reservation.read", f"user/")
         reservation_counts = defaultdict(int)
         reservations = (
             self._session.query(
