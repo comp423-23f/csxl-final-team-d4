@@ -1,8 +1,8 @@
 <div>
-  <h2>Shared Statistics</h2>
+  <h2 class="title">Shared Statistics</h2>
 
-  <mat-form-field appearance="fill">
-    <mat-label>View shared statistics</mat-label>
+  <mat-form-field appearance="fill" class="dropdown">
+    <mat-label>Choose shared statistics</mat-label>
     <mat-select
       [(value)]="selectedQuery"
       (selectionChange)="selectQueryAndFetchData(selectedQuery)">
@@ -13,7 +13,7 @@
   </mat-form-field>
 
   <div *ngIf="selectedQuery" class="query-details">
-    <span>Selected Query: {{ selectedQuery.name }}</span
+    <span>Query Name: {{ selectedQuery.name }}</span
     >,
     <span
       >Range: {{ selectedQuery.start_date | date: 'mediumDate' }} to

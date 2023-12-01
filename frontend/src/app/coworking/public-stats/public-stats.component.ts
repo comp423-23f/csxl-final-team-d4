@@ -6,11 +6,11 @@ import { Route } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
 
 @Component({
-  selector: 'app-personal-stats',
-  templateUrl: './personal-stats.component.html',
-  styleUrls: ['./personal-stats.component.css']
+  selector: 'app-public-stats',
+  templateUrl: './public-stats.component.html',
+  styleUrls: ['./public-stats.component.css']
 })
-export class PersonalStatsComponent implements OnInit {
+export class PublicStatsComponent implements OnInit {
   selectedQuery: Query | null = null;
   sharedQueries: Query[] = [];
   displayChart = false;
@@ -28,9 +28,9 @@ export class PersonalStatsComponent implements OnInit {
   }
   constructor(private http: HttpClient) {}
   public static Route: Route = {
-    path: 'personal-stats',
-    component: PersonalStatsComponent,
-    title: 'Personal Statistics'
+    path: 'public-stats',
+    component: PublicStatsComponent,
+    title: 'Public Statistics'
   };
 
   retrieveSharedQueries(): void {

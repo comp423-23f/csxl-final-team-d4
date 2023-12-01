@@ -22,3 +22,18 @@
 mat-card-content {
     margin-top: 8px;
 }
+.button-container{
+    margin-left: 15px;
+}
+.viewPersonalStats{
+    margin-left: 10px;
+    font-size: 15px;
+    text-decoration: underline;
+    height: 50px;
+    width: 200px;
+    margin-bottom: 10px;
+}
+.viewPersonalStats:hover{
+    background-color: #4254f5;
+    transition: solid background-color .4s;
+}

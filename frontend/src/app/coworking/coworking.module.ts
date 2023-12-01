@@ -25,7 +25,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { SearchReports } from './widgets/search-reports/search-reports.widget';
-import { PersonalStatsComponent } from './personal-stats/personal-stats.component';
+import { PublicStatsComponent } from './public-stats/public-stats.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 
@@ -40,7 +40,7 @@ import { MatOptionModule } from '@angular/material/core';
     StatisticsComponent,
     StatsTable,
     SearchReports,
-    PersonalStatsComponent
+    PublicStatsComponent
   ],
   imports: [
     CommonModule,
