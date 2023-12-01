@@ -13,47 +13,51 @@ openapi_tags = {
 }
 
 
-@api.get("/get-all-queries", response_model=List[Query], tags=["Coworking"])
+@api.get("/get_all_queries", response_model=List[Query], tags=["Coworking"])
 def get_all_queries(
-    user: User = Depends(authenticated_pid),
-    query_svc: QueryService = Depends(QueryService),
+    # user: User = Depends(authenticated_pid),
+    subject: User = Depends(registered_user),
+    query_svc: QueryService = Depends(),
 ) -> List[Query]:
     try:
-        return query_svc.get_all()
+        return query_svc.get_all(subject)
     except HTTPException as e:
         raise HTTPException(status_code=e.status_code, detail=e.detail)
 
 
-@api.post("/save-reports", response_model=Query, tags=["Coworking"])
+@api.post("/save_reports", response_model=Query, tags=["Coworking"])
 def create_query(
     query_data: Query_noID,
-    query_svc: QueryService = Depends(QueryService),
-    user: User = Depends(authenticated_pid),
+    subject: User = Depends(registered_user),
+    query_svc: QueryService = Depends(),
+    # user: User = Depends(authenticated_pid),
 ) -> Query:
-    return query_svc.add(query_data.model_dump())
+    return query_svc.add(subject, query_data.model_dump())
 
 
-@api.delete("/delete-query/{query_name}", response_model=bool, tags=["Coworking"])
+@api.delete("/delete_query/{query_name}", response_model=bool, tags=["Coworking"])
 def delete_query(
     query_name: str,
-    query_svc: QueryService = Depends(QueryService),
-    user: User = Depends(authenticated_pid),
+    subject: User = Depends(registered_user),
+    query_svc: QueryService = Depends(),
+    # user: User = Depends(authenticated_pid),
 ) -> bool:
-    if not query_svc.delete(query_name):
+    if not query_svc.delete(subject, query_name):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Query not found"
         )
     return True
 
 
-@api.get("/update-share/{query_name}", response_model=bool, tags=["Coworking"])
+@api.get("/update_share/{query_name}", response_model=bool, tags=["Coworking"])
 def update_query_share(
     query_name: str,
-    query_svc: QueryService = Depends(QueryService),
-    user: User = Depends(authenticated_pid),
+    subject: User = Depends(registered_user),
+    query_svc: QueryService = Depends(),
+    # user: User = Depends(authenticated_pid),
 ) -> bool:
     try:
-        return query_svc.update_share(query_name)
+        return query_svc.update_share(subject, query_name)
     except HTTPException as e:
         raise HTTPException(status_code=e.status_code, detail=e.detail)
 
