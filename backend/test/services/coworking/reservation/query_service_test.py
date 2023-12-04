@@ -39,7 +39,7 @@ from . import reservation_data
 
 
 def test_get_all(query_svc: QueryService):
-    all: list[Query] = query_svc.get_all()
+    all: list[Query] = query_svc.get_all(user_data.ambassador)
     assert len(all) == len(query_data.queries)
     for query in query_data.queries:
         assert query in all
@@ -56,7 +56,7 @@ def test_add_existent(query_svc: QueryService):
         share=False,
     )
     with pytest.raises(Exception):
-        query_svc.add(new_query)
+        query_svc.add(user_data.ambassador, new_query)
 
 
 def test_add_non_existent(query_svc: QueryService):
@@ -78,33 +78,83 @@ def test_add_non_existent(query_svc: QueryService):
         compare_end_date=None,
         share=False,
     )
-    assert query_svc.add(new_query) == new_query_1
+
+    permission_svc = create_autospec(PermissionService)
+    permission_svc.enforce.return_value = None
+    query_svc._permission_svc = permission_svc
+
+    query = query_svc.add(user_data.root, new_query)
+    assert query.id is not None
+    permission_svc.enforce.assert_called_once_with(
+        user_data.root,
+        "coworking.queries.manage",
+        f"user/*",
+    )
 
 
 def test_delete_existent(query_svc: QueryService):
-    boolean = query_svc.delete("jkkk")
+    permission_svc = create_autospec(PermissionService)
+    permission_svc.enforce.return_value = None
+    query_svc._permission_svc = permission_svc
+
+    boolean = query_svc.delete(user_data.root, "jkkk")
     deleted = [query for query in query_data.queries if query.name == "jkkk"]
-    all: list[Query] = query_svc.get_all()
+    all: list[Query] = query_svc.get_all(user_data.root)
     assert len(all) == len(query_data.queries) - 1
     assert deleted[0] not in all
     assert boolean
+    permission_svc.enforce.assert_called_once_with(
+        user_data.root,
+        "coworking.queries.manage",
+        f"user/*",
+    )
 
 
 def test_delete_non_existent(query_svc: QueryService):
-    boolean = query_svc.delete("jk")
+    permission_svc = create_autospec(PermissionService)
+    permission_svc.enforce.return_value = None
+    query_svc._permission_svc = permission_svc
+
+    boolean = query_svc.delete(user_data.root, "jk")
     deleted = [query for query in query_data.queries if query.name == "jkkk"]
-    all: list[Query] = query_svc.get_all()
+    all: list[Query] = query_svc.get_all(user_data.root)
     assert boolean == False
+
+    permission_svc.enforce.assert_called_once_with(
+        user_data.root,
+        "coworking.queries.manage",
+        f"user/*",
+    )
 
 
 def test_update_share(query_svc: QueryService):
-    boolean = query_svc.update_share("jkkk")
-    updated = [query for query in query_svc.get_all() if query.name == "jkkk"]
+    permission_svc = create_autospec(PermissionService)
+    permission_svc.enforce.return_value = None
+    query_svc._permission_svc = permission_svc
+
+    boolean = query_svc.update_share(user_data.root, "jkkk")
+    updated = [
+        query for query in query_svc.get_all(user_data.root) if query.name == "jkkk"
+    ]
     origin = [query for query in query_data.queries if query.name == "jkkk"]
     assert updated[0].share != origin[0].share
     assert boolean
 
+    permission_svc.enforce.assert_called_once_with(
+        user_data.root,
+        "coworking.queries.manage",
+        f"user/*",
+    )
+
 
 def test_update_non_exist_share(query_svc: QueryService):
     with pytest.raises(Exception):
-        query_svc.update_share("jk")
+        query_svc.update_share(user_data.root, "jk")
+
+
+def test_get_share(query_svc: QueryService):
+    shared = [
+        query for query in query_svc.get_all(user_data.root) if query.share == True
+    ]
+    origin = [query for query in query_data.queries if query.share == True]
+    assert shared == origin
