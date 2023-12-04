@@ -881,7 +881,9 @@ class ReservationService:
         return round(percentage, 2)
 
     def _get_start_date_for_time_range(self, end_date: datetime, time_range: str):
-        if time_range == "week":
+        if time_range == "day":
+            return end_date - timedelta(days=1)
+        elif time_range == "week":
             return end_date - timedelta(days=7)
         elif time_range == "month":
             return end_date - timedelta(days=30)
@@ -891,5 +893,5 @@ class ReservationService:
             return end_date - timedelta(days=365)
         else:
             raise ValueError(
-                "Invalid time range. Choose 'week', 'month', 'three_months', or 'year'."
+                "Invalid time range. Choose 'day', 'week', 'month', 'three_months', or 'year'."
             )

@@ -19,8 +19,8 @@ export class PersonalStatsSpecComponent implements OnInit, OnDestroy {
   reservations$: Observable<Reservation[]>;
   columnsToDisplay = ['id', 'date', 'start', 'end', 'seat', 'state'];
   private refreshSubscription!: Subscription;
-  timeRange: 'week' | 'month' | 'three_months' | 'year' = 'week';
-  timeRangeOptions: string[] = ['week', 'month', 'three_months', 'year'];
+  timeRange: 'day' | 'week' | 'month' | 'three_months' | 'year' = 'day';
+  timeRangeOptions: string[] = ['day', 'week', 'month', 'three_months', 'year'];
   meanStayTime: number = 0;
   longerStayPercentage: number = 0;
   statsFetched = false;
@@ -61,7 +61,9 @@ export class PersonalStatsSpecComponent implements OnInit, OnDestroy {
       });
   }
 
-  changeTimeRange(newRange: 'week' | 'month' | 'three_months' | 'year'): void {
+  changeTimeRange(
+    newRange: 'day' | 'week' | 'month' | 'three_months' | 'year'
+  ): void {
     this.statsFetched = false;
     this.timeRange = newRange;
     this.fetchStatistics();
