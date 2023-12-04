@@ -874,7 +874,9 @@ class ReservationService:
         total_comparisons = len(user_stay_times) * len(all_stay_times)
 
         percentage = (
-            (count_longer_stays / total_comparisons) * 100 if total_comparisons else 0
+            (count_longer_stays / total_comparisons) * 100
+            if total_comparisons
+            else 0.00
         )
         return round(percentage, 2)
 
