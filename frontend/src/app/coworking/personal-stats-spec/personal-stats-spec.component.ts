@@ -19,8 +19,8 @@ export class PersonalStatsSpecComponent implements OnInit, OnDestroy {
   reservations$: Observable<Reservation[]>;
   columnsToDisplay = ['id', 'date', 'start', 'end', 'seat', 'state'];
   private refreshSubscription!: Subscription;
-  timeRange: 'day' | 'week' | 'month' | 'three_months' | 'year' = 'day';
-  timeRangeOptions: string[] = ['day', 'week', 'month', 'three_months', 'year'];
+  timeRange: 'day' | 'week' | 'month' | 'year' = 'day';
+  timeRangeOptions: string[] = ['day', 'week', 'month', 'year'];
   meanStayTime: number = 0;
   longerStayPercentage: number = 0;
   statsFetched = false;
@@ -30,7 +30,7 @@ export class PersonalStatsSpecComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.refreshSubscription = timer(0, 60000)
+    this.refreshSubscription = timer(0, 300000)
       .pipe(tap(() => this.fetchReservationsAndStats()))
       .subscribe();
   }
@@ -61,11 +61,13 @@ export class PersonalStatsSpecComponent implements OnInit, OnDestroy {
       });
   }
 
-  changeTimeRange(
-    newRange: 'day' | 'week' | 'month' | 'three_months' | 'year'
-  ): void {
+  changeTimeRange(newRange: 'day' | 'week' | 'month' | 'year'): void {
     this.statsFetched = false;
     this.timeRange = newRange;
     this.fetchStatistics();
+  }
+
+  getColorForPercentage(percentage: number): string {
+    return percentage < 40 ? 'red' : 'green';
   }
 }
