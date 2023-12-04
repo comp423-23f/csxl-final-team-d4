@@ -42,7 +42,7 @@ def test_count_reservations_by_date(reservation_svc: ReservationService):
 
     # Call the method under test
     reservation_count_by_date = reservation_svc.count_reservations_by_date(
-        user_data.ambassador, start_date, end_date
+        user_data.user, start_date, end_date
     )
     # Check the count for each date in the range
     for single_date in (
