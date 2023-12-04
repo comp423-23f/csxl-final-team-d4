@@ -6,8 +6,8 @@
     <mat-card-header>
       <mat-card-title
         >{{ reservations[0].users[0].first_name
-        }}{{ reservations[0].users[0].last_name }} 's Reservation
-        History</mat-card-title
+        }}{{ reservations[0].users[0].last_name }} 's Reservation History
+        (All)</mat-card-title
       >
     </mat-card-header>
     <mat-card-content>
@@ -70,4 +70,22 @@
       <mat-card-content> Go and check in! </mat-card-content>
     </mat-card>
   </ng-template>
+</div>
+<div class="statistics-section">
+  <mat-form-field>
+    <mat-label>Time Range</mat-label>
+    <mat-select [(value)]="timeRange" (selectionChange)="fetchStatistics()">
+      <mat-option *ngFor="let range of timeRangeOptions" [value]="range">
+        {{ range }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div *ngIf="statsFetched">
+    <p>
+      During the past {{ timeRange }}, you averaged stayed
+      {{ meanStayTime | number }} minutes in XL during visits, which is greater
+      than {{ longerStayPercentage | number: '1.2-2' }}% of the community.
+    </p>
+  </div>
 </div>
