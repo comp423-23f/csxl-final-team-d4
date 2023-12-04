@@ -819,6 +819,7 @@ class ReservationService:
                 ReservationEntity.start >= start_date,
                 ReservationEntity.end <= end_date,
             )
+            .options(joinedload(ReservationEntity.users))
             .all()
         )
 
@@ -887,11 +888,9 @@ class ReservationService:
             return end_date - timedelta(days=7)
         elif time_range == "month":
             return end_date - timedelta(days=30)
-        elif time_range == "three_months":
-            return end_date - timedelta(days=90)
         elif time_range == "year":
             return end_date - timedelta(days=365)
         else:
             raise ValueError(
-                "Invalid time range. Choose 'day', 'week', 'month', 'three_months', or 'year'."
+                "Invalid time range. Choose 'day', 'week', 'month', or 'year'."
             )
