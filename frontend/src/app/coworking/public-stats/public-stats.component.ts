@@ -7,11 +7,11 @@ import { forkJoin, of } from 'rxjs';
 import { Profile, ProfileService } from '../../profile/profile.service';
 
 @Component({
-  selector: 'app-personal-stats',
-  templateUrl: './personal-stats.component.html',
-  styleUrls: ['./personal-stats.component.css']
+  selector: 'app-public-stats',
+  templateUrl: './public-stats.component.html',
+  styleUrls: ['./public-stats.component.css']
 })
-export class PersonalStatsComponent implements OnInit {
+export class PublicStatsComponent implements OnInit {
   profile: Profile | undefined;
   personalselectedQuery: Query | null = null;
   personalQueries: Query[] = [];
@@ -41,9 +41,9 @@ export class PersonalStatsComponent implements OnInit {
     });
   }
   public static Route: Route = {
-    path: 'personal-stats',
-    component: PersonalStatsComponent,
-    title: 'Personal Statistics'
+    path: 'public-stats',
+    component: PublicStatsComponent,
+    title: 'Public Statistics'
   };
 
   retrieveSharedQueries(): void {
