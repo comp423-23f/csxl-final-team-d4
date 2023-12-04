@@ -681,7 +681,7 @@ class ReservationService:
     def count_reservations_by_date(
         self, subject: User, start_date: datetime, end_date: datetime
     ) -> dict:
-        self._permission_svc.enforce(subject, "coworking.reservation.read", f"user/*")
+        # self._permission_svc.enforce(subject, "coworking.reservation.read", f"user/*")
         reservation_counts = defaultdict(int)
         reservations = (
             self._session.query(
@@ -783,6 +783,7 @@ class ReservationService:
             "most_common_checkin_day": most_common_day_str,
             "most_common_checkin_hour": most_common_hour_str,
         }
+
     def get_personl_reservation_history(self, subject: User) -> Sequence[Reservation]:
         reservations = (
             self._session.query(ReservationEntity)

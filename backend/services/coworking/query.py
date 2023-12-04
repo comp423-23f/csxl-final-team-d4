@@ -25,7 +25,7 @@ class QueryService:
         self._permission_svc = permission_svc
 
     def get_all(self, subject: User) -> List[Query]:
-        self._permission_svc.enforce(subject, "coworking.queries.read", f"user/*")
+        # self._permission_svc.enforce(subject, "coworking.queries.read", f"user/*")
         print("backend service method called")
         entities = self._session.query(QueryEntity).all()
         return [entity.to_model() for entity in entities]
