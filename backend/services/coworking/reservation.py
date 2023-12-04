@@ -5,6 +5,7 @@ from collections import defaultdict, Counter
 from datetime import datetime, timedelta
 from random import random
 from typing import Sequence
+from numpy import double
 from sqlalchemy import Date, func
 from sqlalchemy.orm import Session, joinedload
 
@@ -681,8 +682,6 @@ class ReservationService:
     def count_reservations_by_date(
         self, subject: User, start_date: datetime, end_date: datetime
     ) -> dict:
-        print("///////////////////////////////////////////////////////////////////")
-        print(pd.__version__)
         reservation_counts = defaultdict(int)
         reservations = (
             self._session.query(
@@ -806,3 +805,89 @@ class ReservationService:
             .all()
         )
         return [reservation.to_model() for reservation in reservations]
+
+    def calculate_mean_stay_time(self, user: User, time_range: str) -> float:
+        end_date = datetime.now()
+        start_date = self._get_start_date_for_time_range(end_date, time_range)
+
+        reservations = (
+            self._session.query(ReservationEntity)
+            .join(ReservationEntity.users)
+            .filter(
+                UserEntity.id == user.id,
+                ReservationEntity.state == ReservationState.CHECKED_OUT,
+                ReservationEntity.start >= start_date,
+                ReservationEntity.end <= end_date,
+            )
+            .all()
+        )
+
+        if not reservations:
+            return 0.0
+
+        total_time = sum(
+            [(res.end - res.start).total_seconds() for res in reservations]
+        )
+        mean_time = total_time / len(reservations)
+        return mean_time / 60
+
+    def calculate_percentage_of_longer_stays(
+        self, user: User, time_range: str
+    ) -> float:
+        end_date = datetime.now()
+        start_date = self._get_start_date_for_time_range(end_date, time_range)
+
+        user_reservations = (
+            self._session.query(ReservationEntity)
+            .join(ReservationEntity.users)
+            .filter(
+                UserEntity.id == user.id,
+                ReservationEntity.state == ReservationState.CHECKED_OUT,
+                ReservationEntity.start >= start_date,
+                ReservationEntity.end <= end_date,
+            )
+            .all()
+        )
+
+        all_reservations = (
+            self._session.query(ReservationEntity)
+            .filter(
+                ReservationEntity.state == ReservationState.CHECKED_OUT,
+                ReservationEntity.start >= start_date,
+                ReservationEntity.end <= end_date,
+            )
+            .all()
+        )
+
+        user_stay_times = [
+            (res.end - res.start).total_seconds() for res in user_reservations
+        ]
+        all_stay_times = [
+            (res.end - res.start).total_seconds() for res in all_reservations
+        ]
+
+        count_longer_stays = sum(
+            user_stay > other_stay
+            for user_stay in user_stay_times
+            for other_stay in all_stay_times
+        )
+        total_comparisons = len(user_stay_times) * len(all_stay_times)
+
+        percentage = (
+            (count_longer_stays / total_comparisons) * 100 if total_comparisons else 0
+        )
+        return round(percentage, 2)
+
+    def _get_start_date_for_time_range(self, end_date: datetime, time_range: str):
+        if time_range == "week":
+            return end_date - timedelta(days=7)
+        elif time_range == "month":
+            return end_date - timedelta(days=30)
+        elif time_range == "three_months":
+            return end_date - timedelta(days=90)
+        elif time_range == "year":
+            return end_date - timedelta(days=365)
+        else:
+            raise ValueError(
+                "Invalid time range. Choose 'week', 'month', 'three_months', or 'year'."
+            )
