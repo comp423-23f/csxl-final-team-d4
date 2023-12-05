@@ -47,9 +47,6 @@ def test_mean_stay(reservation_svc: ReservationService):
     )
 
     mean_stay = mean_stay_and_peak_checkin.get("mean_stay_time")
-    most_common_checkin_hour = mean_stay_and_peak_checkin.get(
-        "most_common_checkin_hour"
-    )
 
     checked_out_reservations = [
         reservation
