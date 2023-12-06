@@ -28,11 +28,11 @@ def get_all_queries(
 @api.post("/save_reports", response_model=Query, tags=["Coworking"])
 def create_query(
     query_data: Query_noID,
-    subject: User = Depends(registered_user),
+    # subject: User = Depends(registered_user),
     query_svc: QueryService = Depends(),
-    # user: User = Depends(authenticated_pid),
+    user: User = Depends(authenticated_pid),
 ) -> Query:
-    return query_svc.add(subject, query_data.model_dump())
+    return query_svc.add(user, query_data.model_dump())
 
 
 @api.delete("/delete_query/{query_name}", response_model=bool, tags=["Coworking"])

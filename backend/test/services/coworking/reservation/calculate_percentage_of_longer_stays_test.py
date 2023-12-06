@@ -47,7 +47,9 @@ def test_calculate_percentage_of_longer_stays_for_day(
         user_data.user, time_range
     )
 
-    start_date = reservation_svc._get_start_date_for_time_range(end_date, time_range)
+    start_date = reservation_svc._get_start_date_for_time_range(
+        end_date, time_range
+    )  # The method is tested in the previous file
 
     user_reservations = [
         reservation
@@ -203,6 +205,11 @@ def test_calculate_percentage_of_longer_stays_for_month(
     calculate_pentage = round(percentage, 2)
 
     assert calculate_pentage == expect_calculate_pentage
+
+
+def test_for_invalid_string_input(reservation_svc: ReservationService):
+    with pytest.raises(ValueError):
+        reservation_svc.calculate_percentage_of_longer_stays(user_data.user, "year1")
 
 
 def test_calculate_percentage_of_longer_stays_for_year(

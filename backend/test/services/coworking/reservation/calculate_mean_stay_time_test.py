@@ -1,7 +1,11 @@
 """ReservationService#calculate_mean_stay_time tests."""
 
+from unittest.case import _AssertRaisesContext
 from unittest.mock import create_autospec, call
+import unittest
+from datetime import datetime, timedelta
 
+import pytest
 import pandas as pd
 
 from backend.models.coworking.reservation import ReservationState
@@ -35,6 +39,38 @@ from .reservation_data import fake_data_fixture as insert_order_4
 from ...core_data import user_data
 from .. import seat_data
 from . import reservation_data
+
+
+def test_get_start_date_for_time_range(reservation_svc: ReservationService):
+    end_date = datetime.now()
+
+    val_day = end_date - timedelta(days=1)
+    val_week = end_date - timedelta(days=7)
+    val_month = end_date - timedelta(days=30)
+    val_year = end_date - timedelta(days=365)
+
+    my_val_day = start_date = reservation_svc._get_start_date_for_time_range(
+        end_date, "day"
+    )
+    my_val_week = start_date = reservation_svc._get_start_date_for_time_range(
+        end_date, "week"
+    )
+    my_val_month = start_date = reservation_svc._get_start_date_for_time_range(
+        end_date, "month"
+    )
+    my_val_year = start_date = reservation_svc._get_start_date_for_time_range(
+        end_date, "year"
+    )
+
+    assert val_day == my_val_day
+    assert val_week == my_val_week
+    assert val_month == my_val_month
+    assert val_year == my_val_year
+
+
+def test_for_invalid_string_input(reservation_svc: ReservationService):
+    with pytest.raises(ValueError):
+        reservation_svc._get_start_date_for_time_range(datetime.now(), "year1")
 
 
 def test_calculate_mean_stay_time_for_day(reservation_svc: ReservationService):
