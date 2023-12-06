@@ -837,6 +837,7 @@ class ReservationService:
     ) -> float:
         end_date = datetime.now()
         start_date = self._get_start_date_for_time_range(end_date, time_range)
+
         user_reservations = (
             self._session.query(ReservationEntity)
             .join(ReservationEntity.users)
