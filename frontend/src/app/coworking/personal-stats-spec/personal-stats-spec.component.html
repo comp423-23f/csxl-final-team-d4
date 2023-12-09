@@ -71,25 +71,3 @@
     </mat-card>
   </ng-template>
 </div>
-<div class="statistics-section" style="padding-left: 20px">
-  <mat-form-field style="padding-left: 10px">
-    <mat-label>Time Range</mat-label>
-    <mat-select [(value)]="timeRange" (selectionChange)="fetchStatistics()">
-      <mat-option *ngFor="let range of timeRangeOptions" [value]="range">
-        {{ range }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <div *ngIf="statsFetched">
-    <p style="font-size: 18px; padding-left: 10px; font-weight: 450">
-      During the past {{ timeRange }}, you averaged stayed
-      <span style="color: #19b95c">{{ meanStayTime | number }}</span> minutes in
-      XL during visits, which is greater than
-      <span
-        [ngStyle]="{ color: getColorForPercentage(longerStayPercentage) }"
-        >{{ longerStayPercentage | number: '1.2-2' }}</span
-      >% of the community.
-    </p>
-  </div>
-</div>
