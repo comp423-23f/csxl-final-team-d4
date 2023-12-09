@@ -18,10 +18,14 @@ ambassador_permission = Permission(id=2, action="checkin.create", resource="chec
 ambassador_permission_coworking_reservation = Permission(
     id=3, action="coworking.reservation.*", resource="*"
 )
+ambassador_permission_coworking_queries = Permission(
+    id=4, action="coworking.queries.*", resource="*"
+)
 permissions = [
     root_role_permission,
     ambassador_permission,
     ambassador_permission_coworking_reservation,
+    ambassador_permission_coworking_queries,
 ]
 
 
