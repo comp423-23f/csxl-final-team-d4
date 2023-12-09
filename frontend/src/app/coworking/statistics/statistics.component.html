@@ -3,8 +3,8 @@
   href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.4.0/remixicon.css"
   crossorigin="" />
 
-<div style="display: flex; align-items: center">
-  <mat-form-field appearance="fill">
+<div class="startDates">
+  <mat-form-field appearance="fill" class="S1">
     <mat-label>Start Date</mat-label>
     <input matInput [matDatepicker]="startPicker" [(ngModel)]="startDate" />
     <mat-datepicker-toggle
@@ -13,7 +13,7 @@
     <mat-datepicker #startPicker startView="month"></mat-datepicker>
   </mat-form-field>
 
-  <mat-form-field appearance="fill">
+  <mat-form-field appearance="fill" class="S2">
     <mat-label>End Date</mat-label>
     <input
       matInput
@@ -26,8 +26,8 @@
   </mat-form-field>
 </div>
 
-<div>
-  <mat-form-field appearance="fill">
+<div class="compareDates">
+  <mat-form-field appearance="fill" class="O1">
     <mat-label>(Optional) Start Date2</mat-label>
     <input
       matInput
@@ -39,7 +39,7 @@
     <mat-datepicker #compareStartPicker startView="month"></mat-datepicker>
   </mat-form-field>
 
-  <mat-form-field appearance="fill">
+  <mat-form-field appearance="fill" class="O2">
     <mat-label>(Optional) End Date2</mat-label>
     <input
       matInput
@@ -52,6 +52,9 @@
       [for]="compareEndPicker"></mat-datepicker-toggle>
     <mat-datepicker #compareEndPicker startView="month"></mat-datepicker>
   </mat-form-field>
+</div>
+
+<div>
   <div class="horizontal-container">
     <button
       mat-raised-button
@@ -123,7 +126,7 @@
   </div>
 </div>
 
-<div *ngIf="displayChart" style="display: block">
+<div *ngIf="displayChart" class="chart">
   <canvas
     baseChart
     width="600"
@@ -132,10 +135,8 @@
     [data]="lineChartData"
     [options]="lineChartOptions"
     [legend]="lineChartLegend"></canvas>
-</div>
-
-<div class="stats-table">
   <stats-table
+    class="stats"
     [originalData_0]="
       lineChartData.datasets[0] ? lineChartData.datasets[0].data : []
     "
