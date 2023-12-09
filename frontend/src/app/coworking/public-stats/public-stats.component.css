@@ -90,4 +90,30 @@
   .mat-mdc-card {
     max-width: 100%;
 }
-
+.sharedTitle{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.sharedDrop{
+  margin-left: 475px;
+}
+.query-details{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.chart-container{
+  display: block;
+  margin: auto;
+}
+.publicTitle{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+.viewStats{
+  display: block;
+  margin: auto;
+}

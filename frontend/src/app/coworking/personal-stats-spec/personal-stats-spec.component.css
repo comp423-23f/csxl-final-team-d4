@@ -107,3 +107,12 @@ mat-divider {
 .report-name, .report-range, .report-compare {
   font-weight: bold;
 }
+.dropdown{
+  margin-left: 450px;
+  margin-top: 20px;
+}
+.content{
+  display: block;
+  margin: auto;
+  margin-top: 20px;
+}

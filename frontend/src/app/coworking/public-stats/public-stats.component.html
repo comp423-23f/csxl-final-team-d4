@@ -1,7 +1,7 @@
 <div>
-  <h2>Shared Statistics</h2>
+  <h2 class="sharedTitle">Shared Statistics</h2>
 
-  <mat-form-field appearance="fill">
+  <mat-form-field appearance="fill" class="sharedDrop">
     <mat-label>View shared statistics</mat-label>
     <mat-select
       [(value)]="selectedQuery"
@@ -35,9 +35,10 @@
     [legend]="lineChartLegend">
   </canvas>
 </div>
+
 <div>
-  <h2>
-    {{ profile?.first_name }} {{ profile?.last_name }} 's Public Statistics
+  <h2 class="publicTitle">
+    {{ profile?.first_name }} {{ profile?.last_name }} 's Personal Statistics
   </h2>
 
   <div class="button-container">
