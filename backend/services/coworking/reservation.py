@@ -686,11 +686,11 @@ class ReservationService:
         reservations = (
             self._session.query(
                 func.date(ReservationEntity.start).label("date"),
-                func.count("*").label("count"),
+                func.count("id").label("count"),
             )
             .filter(
-                ReservationEntity.start >= start_date,
-                ReservationEntity.start < end_date,
+                ReservationEntity.start >= start_date.date(),
+                ReservationEntity.start < end_date.date(),
                 ReservationEntity.state.not_in(
                     [ReservationState.CANCELLED, ReservationState.DRAFT]
                 ),
@@ -816,8 +816,8 @@ class ReservationService:
             .filter(
                 UserEntity.id == user.id,
                 ReservationEntity.state == ReservationState.CHECKED_OUT,
-                ReservationEntity.start >= start_date,
-                ReservationEntity.end <= end_date,
+                ReservationEntity.start >= start_date.date(),
+                ReservationEntity.end < end_date.date() + timedelta(days=1),
             )
             .options(joinedload(ReservationEntity.users))
             .all()

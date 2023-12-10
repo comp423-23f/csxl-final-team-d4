@@ -1,6 +1,8 @@
 """ReservationService#get_seat_reservations_by_date tests."""
 
 from unittest.mock import create_autospec, call
+
+from fastapi import HTTPException
 from backend.models.coworking.reservation import ReservationState
 from . import query_data
 from .query_data import *
@@ -8,7 +10,12 @@ from .....models.coworking import Query
 from .....services.coworking import ReservationService
 from .....services import PermissionService
 from .....models.coworking import Reservation
-from .....services.exceptions import ResourceNotFoundException, UserPermissionException
+from .....services.exceptions import (
+    QueryAlreadyExistsException,
+    QueryDoesntExistsException,
+    ResourceNotFoundException,
+    UserPermissionException,
+)
 from .....services.coworking.query import QueryService
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
@@ -46,17 +53,26 @@ def test_get_all(query_svc: QueryService):
 
 
 def test_add_existent(query_svc: QueryService):
-    new_query = dict(
-        id=1,
-        name="jkkk",
-        start_date=datetime(2023, 10, 29),
-        end_date=datetime(2023, 11, 29),
-        compare_start_date=None,
-        compare_end_date=None,
-        share=False,
-    )
-    with pytest.raises(Exception):
-        query_svc.add(user_data.ambassador, new_query)
+    with pytest.raises(QueryAlreadyExistsException):
+        new_query = dict(
+            id=1,
+            name="jkkk",
+            start_date=datetime(2023, 10, 29),
+            end_date=datetime(2023, 11, 29),
+            compare_start_date=None,
+            compare_end_date=None,
+            share=False,
+        )
+        permission_svc = create_autospec(PermissionService)
+        permission_svc.enforce.return_value = None
+        query_svc._permission_svc = permission_svc
+
+        query_svc.add(user_data.root, new_query)
+        permission_svc.enforce.assert_called_once_with(
+            user_data.root,
+            "coworking.queries.manage",
+            f"user/*",
+        )
 
 
 def test_add_non_existent(query_svc: QueryService):
@@ -148,13 +164,19 @@ def test_update_share(query_svc: QueryService):
 
 
 def test_update_non_exist_share(query_svc: QueryService):
-    with pytest.raises(Exception):
+    with pytest.raises(QueryDoesntExistsException):
+        permission_svc = create_autospec(PermissionService)
+        permission_svc.enforce.return_value = None
+        query_svc._permission_svc = permission_svc
         query_svc.update_share(user_data.root, "jk")
+        permission_svc.enforce.assert_called_once_with(
+            user_data.root,
+            "coworking.queries.manage",
+            f"user/*",
+        )
 
 
 def test_get_share(query_svc: QueryService):
-    shared = [
-        query for query in query_svc.get_all(user_data.root) if query.share == True
-    ]
+    shared = [query for query in query_svc.get_shared() if query.share == True]
     origin = [query for query in query_data.queries if query.share == True]
     assert shared == origin

@@ -24,3 +24,17 @@ class OrganizationNotFoundException(Exception):
 
     def __init__(self, id: str):
         super().__init__(f"No organization found matching slug/id: {id}")
+
+
+class QueryAlreadyExistsException(Exception):
+    "A saved report with this name already exists"
+
+    def __init__(self):
+        super().__init__(f"A saved report with this name already exists")
+
+
+class QueryDoesntExistsException(Exception):
+    "Query not found"
+
+    def __init__(self):
+        super().__init__(f"Query not found")

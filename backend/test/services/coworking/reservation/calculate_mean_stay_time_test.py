@@ -4,6 +4,7 @@ from unittest.case import _AssertRaisesContext
 from unittest.mock import create_autospec, call
 import unittest
 from datetime import datetime, timedelta
+from numpy import average
 
 import pytest
 import pandas as pd
@@ -78,7 +79,9 @@ def test_calculate_mean_stay_time_for_day(reservation_svc: ReservationService):
     end_date = datetime.now()
     time_range = "day"
 
-    mean_stay = reservation_svc.calculate_mean_stay_time(user_data.user, time_range)
+    expect_mean_stay = reservation_svc.calculate_mean_stay_time(
+        user_data.ambassador, time_range
+    )
 
     start_date = reservation_svc._get_start_date_for_time_range(end_date, time_range)
 
@@ -86,30 +89,32 @@ def test_calculate_mean_stay_time_for_day(reservation_svc: ReservationService):
         reservation
         for reservation in reservation_data.reservations
         if (
-            reservation.users == [user_data.user]
+            reservation.users == [user_data.ambassador]
             and ReservationState.CHECKED_OUT in reservation.state
-            and reservation.start >= start_date
-            and reservation.end <= end_date
+            and reservation.start.date() >= start_date.date()
+            and reservation.end.date() <= end_date.date()
         )
     ]
 
-    if not reservations:
-        assert mean_stay == 0
-        return
+    total_time = 0
+    for r in reservations:
+        current_time = r.end - r.start
+        total_time += current_time.total_seconds()
 
-    total_time = sum([(res.end - res.start).total_seconds() for res in reservations])
-    mean_time = total_time / len(reservations)
-    expect_mean_stay = mean_time / 60
+    mean_time = average(total_time)
+    mean_stay = mean_time / 60
 
     assert mean_stay == expect_mean_stay
 
 
 def test_calculate_mean_stay_time_for_week(reservation_svc: ReservationService):
     """Revised test to cover individual dates and edge cases."""
-    end_date = datetime.now()
+    end_date = datetime.now() + timedelta(days=1)
     time_range = "week"
 
-    mean_stay = reservation_svc.calculate_mean_stay_time(user_data.user, time_range)
+    expect_mean_stay = reservation_svc.calculate_mean_stay_time(
+        user_data.ambassador, time_range
+    )
 
     start_date = reservation_svc._get_start_date_for_time_range(end_date, time_range)
 
@@ -117,30 +122,32 @@ def test_calculate_mean_stay_time_for_week(reservation_svc: ReservationService):
         reservation
         for reservation in reservation_data.reservations
         if (
-            reservation.users == [user_data.user]
+            reservation.users == [user_data.ambassador]
             and ReservationState.CHECKED_OUT in reservation.state
-            and reservation.start >= start_date
-            and reservation.end <= end_date
+            and reservation.start.date() >= start_date.date()
+            and reservation.end.date() <= end_date.date()
         )
     ]
 
-    if not reservations:
-        assert mean_stay == 0
-        return
+    total_time = 0
+    for r in reservations:
+        current_time = r.end - r.start
+        total_time += current_time.total_seconds()
 
-    total_time = sum([(res.end - res.start).total_seconds() for res in reservations])
-    mean_time = total_time / len(reservations)
-    expect_mean_stay = mean_time / 60
+    mean_time = average(total_time)
+    mean_stay = mean_time / 60
 
     assert mean_stay == expect_mean_stay
 
 
 def test_calculate_mean_stay_time_for_month(reservation_svc: ReservationService):
     """Revised test to cover individual dates and edge cases."""
-    end_date = datetime.now()
+    end_date = datetime.now() + timedelta(days=1)
     time_range = "month"
 
-    mean_stay = reservation_svc.calculate_mean_stay_time(user_data.user, time_range)
+    expect_mean_stay = reservation_svc.calculate_mean_stay_time(
+        user_data.ambassador, time_range
+    )
 
     start_date = reservation_svc._get_start_date_for_time_range(end_date, time_range)
 
@@ -148,30 +155,32 @@ def test_calculate_mean_stay_time_for_month(reservation_svc: ReservationService)
         reservation
         for reservation in reservation_data.reservations
         if (
-            reservation.users == [user_data.user]
+            reservation.users == [user_data.ambassador]
             and ReservationState.CHECKED_OUT in reservation.state
-            and reservation.start >= start_date
-            and reservation.end <= end_date
+            and reservation.start.date() >= start_date.date()
+            and reservation.end.date() <= end_date.date()
         )
     ]
 
-    if not reservations:
-        assert mean_stay == 0
-        return
+    total_time = 0
+    for r in reservations:
+        current_time = r.end - r.start
+        total_time += current_time.total_seconds()
 
-    total_time = sum([(res.end - res.start).total_seconds() for res in reservations])
-    mean_time = total_time / len(reservations)
-    expect_mean_stay = mean_time / 60
+    mean_time = average(total_time)
+    mean_stay = mean_time / 60
 
     assert mean_stay == expect_mean_stay
 
 
 def test_calculate_mean_stay_time_for_year(reservation_svc: ReservationService):
     """Revised test to cover individual dates and edge cases."""
-    end_date = datetime.now()
+    end_date = datetime.now() + timedelta(days=1)
     time_range = "year"
 
-    mean_stay = reservation_svc.calculate_mean_stay_time(user_data.user, time_range)
+    expect_mean_stay = reservation_svc.calculate_mean_stay_time(
+        user_data.ambassador, time_range
+    )
 
     start_date = reservation_svc._get_start_date_for_time_range(end_date, time_range)
 
@@ -179,7 +188,42 @@ def test_calculate_mean_stay_time_for_year(reservation_svc: ReservationService):
         reservation
         for reservation in reservation_data.reservations
         if (
-            reservation.users == [user_data.user]
+            reservation.users == [user_data.ambassador]
+            and ReservationState.CHECKED_OUT in reservation.state
+            and reservation.start.date() >= start_date.date()
+            and reservation.end.date() <= end_date.date()
+        )
+    ]
+
+    total_time = 0
+    for r in reservations:
+        current_time = r.end - r.start
+        total_time += current_time.total_seconds()
+
+    mean_time = average(total_time)
+    mean_stay = mean_time / 60
+
+    assert mean_stay == expect_mean_stay
+
+
+def test_calculate_mean_stay_time_for_not_exist_date(
+    reservation_svc: ReservationService,
+):
+    """Revised test to cover individual dates and edge cases."""
+    end_date = datetime.now()
+    time_range = "day"
+
+    expect_mean_stay = reservation_svc.calculate_mean_stay_time(
+        user_data.user, time_range
+    )
+
+    start_date = reservation_svc._get_start_date_for_time_range(end_date, time_range)
+
+    reservations = [
+        reservation
+        for reservation in reservation_data.reservations
+        if (
+            reservation.users == user_data.user
             and ReservationState.CHECKED_OUT in reservation.state
             and reservation.start >= start_date
             and reservation.end <= end_date
@@ -187,11 +231,5 @@ def test_calculate_mean_stay_time_for_year(reservation_svc: ReservationService):
     ]
 
     if not reservations:
-        assert mean_stay == 0
+        assert expect_mean_stay == pytest.approx(0.0)
         return
-
-    total_time = sum([(res.end - res.start).total_seconds() for res in reservations])
-    mean_time = total_time / len(reservations)
-    expect_mean_stay = mean_time / 60
-
-    assert mean_stay == expect_mean_stay

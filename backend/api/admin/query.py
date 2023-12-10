@@ -2,6 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List
 from backend.api.authentication import registered_user, authenticated_pid
 from backend.models.user import User
+from backend.services.exceptions import (
+    QueryAlreadyExistsException,
+    QueryDoesntExistsException,
+)
 from ...database import db_session
 from ...services.coworking.query import QueryService
 from ...models.coworking import Query, Query_noID
@@ -32,7 +36,12 @@ def create_query(
     query_svc: QueryService = Depends(),
     # user: User = Depends(authenticated_pid),
 ) -> Query:
-    return query_svc.add(subject, query_data.model_dump())
+    try:
+        return query_svc.add(subject, query_data.model_dump())
+    except QueryAlreadyExistsException as e:
+        raise HTTPException(
+            status_code=400, detail="A saved report with this name already exists"
+        )
 
 
 @api.delete("/delete_query/{query_name}", response_model=bool, tags=["Coworking"])
@@ -69,5 +78,5 @@ def get_shared_queries(
 ) -> List[Query]:
     try:
         return query_svc.get_shared()
-    except HTTPException as e:
-        raise HTTPException(status_code=e.status_code, detail=e.detail)
+    except QueryDoesntExistsException as e:
+        raise HTTPException(status_code=404, detail="Query not found")

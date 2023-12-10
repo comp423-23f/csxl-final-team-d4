@@ -1,6 +1,7 @@
 """ReservationService#get_current_reservations_for_user tests."""
 
 from unittest.mock import create_autospec
+from backend.models.user import User
 
 from backend.services.exceptions import ResourceNotFoundException
 
@@ -52,6 +53,22 @@ def test_get_personal_reservation_for_user_as_user(
 def test_get_non_existing_personal_reservation(
     reservation_svc: ReservationService,
 ):
+    user1 = User(
+        id=4,
+        pid=222222222,
+        onyen="user1",
+        email="user1@unc.edu",
+        first_name="User1",
+        last_name="User1",
+        pronouns="She / They",
+    )
+
+    reservations = reservation_svc.get_personl_reservation_history(user1)
+    assert len(reservations) == 0
+
+
+def test_get_existing_personal_reservation(
+    reservation_svc: ReservationService,
+):
     reservations = reservation_svc.get_personl_reservation_history(user_data.user)
     assert len(reservations) == 1
-    assert reservations[1] == None

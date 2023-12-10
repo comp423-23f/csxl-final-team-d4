@@ -1,5 +1,6 @@
 """ReservationService#get_seat_reservations_by_date tests."""
 
+from collections import defaultdict
 from unittest.mock import create_autospec, call
 
 from backend.models.coworking.reservation import ReservationState
@@ -37,8 +38,12 @@ from . import reservation_data
 
 def test_count_reservations_by_date(reservation_svc: ReservationService):
     """Revised test to cover individual dates and edge cases."""
-    start_date = datetime(2023, 10, 29)
-    end_date = datetime(2023, 11, 30)
+    # start_date = datetime(2023, 10, 29)
+    # end_date = datetime(2023, 11, 30)
+
+    start_date = datetime.now()
+
+    end_date = start_date + timedelta(days=4)
 
     # Call the method under test
     reservation_count_by_date = reservation_svc.count_reservations_by_date(
@@ -46,22 +51,24 @@ def test_count_reservations_by_date(reservation_svc: ReservationService):
     )
     # Check the count for each date in the range
     for single_date in (
-        start_date + timedelta(days=n) for n in range((end_date - start_date).days + 1)
+        start_date.date() + timedelta(days=n)
+        for n in range((end_date - start_date).days + 1)
     ):
         expected_count = len(
             [
                 reservation
                 for reservation in reservation_data.reservations
                 if (
-                    reservation.start.date() == single_date.date()
-                    and ReservationState.CANCELLED not in reservation.state
-                    and ReservationState.DRAFT not in reservation.state
+                    reservation.start.date() == single_date
+                    and reservation.start < end_date
+                    and reservation.state
+                    not in [ReservationState.CANCELLED, ReservationState.DRAFT]
                 )
             ]
         )
         assert (
-            reservation_count_by_date[single_date.date()] == expected_count
-        ), f"Mismatch on date: {single_date.date()}"
+            reservation_count_by_date[single_date] == expected_count
+        ), f"Mismatch on date: {single_date}"
 
     # Verify total count
     total_count = sum(reservation_count_by_date.values())
@@ -69,10 +76,10 @@ def test_count_reservations_by_date(reservation_svc: ReservationService):
         reservation
         for reservation in reservation_data.reservations
         if (
-            ReservationState.CANCELLED not in reservation.state
-            and ReservationState.DRAFT not in reservation.state
-            and reservation.start >= start_date
-            and reservation.end < end_date + timedelta(days=1)
+            reservation.state
+            not in [ReservationState.CANCELLED, ReservationState.DRAFT]
+            and reservation.start.date() >= start_date.date()
+            and reservation.start.date() < end_date.date()
         )
     ]
     assert total_count == len(non_cancelled_reservations), "Total count mismatch"

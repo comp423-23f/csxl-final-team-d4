@@ -3,16 +3,21 @@ from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 from ...database import db_session
 from ...models.coworking import Query
-from ..exceptions import UserPermissionException, ResourceNotFoundException
+from ..exceptions import (
+    QueryAlreadyExistsException,
+    QueryDoesntExistsException,
+    UserPermissionException,
+    ResourceNotFoundException,
+)
 from ...entities.coworking import QueryEntity
 
 from ..permission import PermissionService
 from ...models.user import User
 
 
-class QueryException(Exception):
-    def __init__(self, message: str):
-        super().__init__(message)
+# class QueryException(Exception):
+#     def __init__(self, message: str):
+#         super().__init__(message)
 
 
 class QueryService:
@@ -36,9 +41,7 @@ class QueryService:
             self._session.query(QueryEntity).filter_by(name=query_data["name"]).first()
         )
         if existing_query:
-            raise HTTPException(
-                status_code=400, detail="A saved report with this name already exists"
-            )
+            raise QueryAlreadyExistsException()
         new_query = QueryEntity(**query_data)
         self._session.add(new_query)
         self._session.commit()
@@ -61,7 +64,7 @@ class QueryService:
             query.share = not query.share
             self._session.commit()
             return query.share
-        raise HTTPException(status_code=404, detail="Query not found")
+        raise QueryDoesntExistsException()
 
     def get_shared(self) -> List[Query]:
         shared_entities = self._session.query(QueryEntity).filter_by(share=True).all()
