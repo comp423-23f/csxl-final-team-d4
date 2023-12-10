@@ -1,16 +1,18 @@
 <div>
   <h2 class="sharedTitle">Shared Statistics</h2>
 
-  <mat-form-field appearance="fill" class="sharedDrop">
-    <mat-label>View shared statistics</mat-label>
-    <mat-select
-      [(value)]="selectedQuery"
-      (selectionChange)="selectQueryAndFetchData(selectedQuery)">
-      <mat-option *ngFor="let query of sharedQueries" [value]="query">
-        {{ query.name }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+  <div class="shared">
+    <mat-form-field appearance="fill" class="sharedDrop">
+      <mat-label>View shared statistics</mat-label>
+      <mat-select
+        [(value)]="selectedQuery"
+        (selectionChange)="selectQueryAndFetchData(selectedQuery)">
+        <mat-option *ngFor="let query of sharedQueries" [value]="query">
+          {{ query.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
 
   <div *ngIf="selectedQuery" class="query-details">
     <span>Selected Query: {{ selectedQuery.name }}</span

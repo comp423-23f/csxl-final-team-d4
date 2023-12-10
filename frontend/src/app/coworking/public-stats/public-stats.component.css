@@ -96,8 +96,15 @@
   align-items: center;
 }
 .sharedDrop{
-  margin-left: 475px;
+  /* margin-left: 475px; */
 }
+.shared{
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  align-items: center; /* Centers vertically */
+  height: 100%;
+}
+
 .query-details{
   display: flex;
   justify-content: center;
